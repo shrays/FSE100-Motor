@@ -1,0 +1,71 @@
+
+body { 
+  background:
+    url(/Images/turtleBackground.png) no-repeat,
+    url(/Images/spaceBackground.png) repeat;
+  background-size: cover, cover;
+}
+
+#button1 {
+  background-image: url(/Images/mButton1.png);
+  background-size: cover;
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  left: 38vw;
+  top: 33.188vw;
+  width: 25vw;
+  height: 7.538vw;
+}
+#button1:hover {
+  background-image: url(/Images/mButton1C.png);
+}
+
+#button2 {
+  background-image: url(/Images/mButton2.png);
+  background-size: cover;
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  left: 64.8vw;
+  top: 33.188vw;
+  width: 25vw;
+  height: 7.538vw;
+}
+#button2:hover {
+  background-image: url(/Images/mButton2C.png);
+}
+
+#button3 {
+  background-image: url(/Images/mButton3.png);
+  background-size: cover;
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  left: 38vw;
+  top: 43.088vw;
+  width: 25vw;
+  height: 7.538vw;
+}
+#button3:hover {
+  background-image: url(/Images/mButton3C.png);
+}
+
+#button4 {
+  background-image: url(/Images/mButton4.png);
+  background-size: cover;
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  left: 64.8vw;
+  top: 43.088vw;
+  width: 25vw;
+  height: 7.538vw;
+}
+#button4:hover {
+  background-image: url(/Images/mButton4C.png);
+}
+
+/* width height same, left= percent of left x bound
+height = percent of top y bound  / 1.7777777777777777777777777777777777777777777777777777777777777777777777777777777
+*/
