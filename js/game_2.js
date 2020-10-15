@@ -1,4 +1,3 @@
-
 function preload() {
   
 }
@@ -10,11 +9,6 @@ function setup() {
 function draw() {
   noStroke();
   noFill("");
-  fill("orange");
+  fill("yellow");
   rect1 = rect(484,423,323,97);//matching(1)
 }
-
-function TracingGame(){
-
-}
-

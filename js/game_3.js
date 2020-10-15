@@ -1,4 +1,3 @@
-
 function preload() {
   
 }
@@ -10,6 +9,6 @@ function setup() {
 function draw() {
   noStroke();
   noFill("");
-  fill("green");
+  fill("purple");
   rect1 = rect(484,423,323,97);//matching(1)
 }
