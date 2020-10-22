@@ -5,11 +5,12 @@ let shape4;
 let shape5;
 let shape6;
 
+
 let img;
 
-function preload(){
+//function preload(){
   //img = loadImage('spaceBackground.png');
-}
+//}
 
 function setup() {
   //createCanvas(640, 360);
@@ -23,12 +24,43 @@ function setup() {
   shape4 = new Draggable(90, 160, 50, 50);
   shape5 = new DraggableS(40,270, 20);
   shape6 = new DraggableS(170,270,35); 
+  
+
 }
 
 function draw() {
- 
+  fill("transparent");
+  background(255);
+  
+  
   fill("black");
   rect(300,0,30,800);
+  
+  //shape1
+  fill("white");
+  rect(440,300,120,50);
+  
+  //shape2
+  fill("white");
+  rect(640, 300, 30, 80);
+  
+  //shape3
+  fill("white");
+  rect(640, 150, 30, 50);
+  
+  //shape4
+  fill("white");
+  rect(540, 200, 50, 50);
+  
+  //shape5
+  fill("white");
+  ellipse(440,270, 40);
+  
+  //shape6
+  fill("white");
+  ellipse(440,170,70);
+  
+  
   
   shape1.over();
   shape1.update();
