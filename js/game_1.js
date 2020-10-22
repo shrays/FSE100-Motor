@@ -5,19 +5,31 @@ let shape4;
 let shape5;
 let shape6;
 
+let img;
+
+function preload(){
+  //img = loadImage('spaceBackground.png');
+}
 
 function setup() {
-  createCanvas(640, 360);
-  shape1 = new Draggable(40, 80, 50, 50);
-  shape2 = new Draggable(150, 80, 50, 50);
-  shape3 = new Draggable(40, 160, 50, 50);
-  shape4 = new Draggable(150, 160, 50, 50);
-  shape5 = new Draggable(100, 250, 50, 50);//square
-  shape6 = new DraggableS(250,300,35); //circle 
+  //createCanvas(640, 360);
+   //img = loadImage('spaceBackground.png');
+  createCanvas(1280,720);
+  //Image(img,0,0);
+
+  shape1 = new Draggable(40, 30, 120, 50);
+  shape2 = new Draggable(150, 90, 30, 80);
+  shape3 = new Draggable(40, 130, 30, 50);
+  shape4 = new Draggable(90, 160, 50, 50);
+  shape5 = new DraggableS(40,270, 20);
+  shape6 = new DraggableS(170,270,35); 
 }
 
 function draw() {
-  background(255);
+ 
+  fill("black");
+  rect(300,0,30,800);
+  
   shape1.over();
   shape1.update();
   shape1.show();
@@ -59,7 +71,7 @@ function mouseReleased() {
 class Draggable {
   constructor(x, y, w, h) {
     this.dragging = false; // Is the object being dragged?
-    this.rollover = false; // Is the mouse over the ellipse?
+    this.rollover = false; // Is the mouse over the square/rectangle?
     this.x = x;
     this.y = y;
     this.w = w;
@@ -91,6 +103,7 @@ class Draggable {
     stroke(0);
     // Different fill based on state
     if (this.dragging) {
+      //noStroke();
       fill(50);
     } else if (this.rollover) {
       fill(100);
@@ -119,7 +132,7 @@ class Draggable {
 class DraggableS {
   constructor(x, y, r) {
     this.dragging = false; // Is the object being dragged?
-    this.rollover = false; // Is the mouse over the ellipse?
+    this.rollover = false; // Is the mouse over the circle?
     this.x = x;
     this.y = y;
     this.r = r;
@@ -160,11 +173,11 @@ class DraggableS {
   }
 
   pressed(x,y) {
-    // Did I click on the rectangle?
+    // Did I click on the circle?
     let d = dist(mouseX, mouseY, this.x, this.y);
     if (d < this.r) {
       this.dragging = true;
-      // If so, keep track of relative location of click to corner of rectangle
+      // If so, keep track of relative location of click to corner of circle
       this.offsetX = this.x - mouseX;
       this.offsetY = this.y - mouseY;
     }
