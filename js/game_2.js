@@ -1,57 +1,52 @@
-var gif_loadImg, gif_createImg;
-let section, paddle, meteor1;
+let paddle;
 let speed = 5;
-let score = 0;
-//let y = 0;
-//let x = 0;
-
 let meteorXPositions;
 let meteorYPositions;
-
 let imageList;
 
-function preload() 
+function setup() 
 {
-  gif_loadImg = loadImage("Images/Meteor.gif");
-  gif_createImg = createImg("Images/Meteor.gif");
-}
-
-function setup() {
   createCanvas(windowWidth, windowHeight);
   paddle = new Draggable(windowWidth/2, windowHeight * 0.87, windowWidth * 0.15, windowWidth * 0.03); // x y w h
-  //meteor1 = new Falling(false);
+
   meteorXPositions = [];
   meteorYPositions = [];
-  imageList.push(createImg("Images/Meteor.gif"));
-
-  meteorXPositions.push(Math.random() * (windowWidth - (27 * windowWidth * 0.002)));
-  meteorYPositions.push(-300);
-  gif_createImg.attribute('height', 47 * windowWidth * 0.002);
-  gif_createImg.attribute('width', 27 * windowWidth * 0.002);
-
+  imageList = [];
 }
 
 function draw() 
 {
-  updateGame();
+  updateGame(); //updates meteor pos
   clear();
-  
-  if(frameCount % 60 == 0) 
+  if(frameCount % 60 == 0) //every 1 second, create new meteor with position
   {
+    imageList.push(createImg("Images/Meteor.gif"));
+    imageList[imageList.length-1].style("user-select", "none");
+    imageList[imageList.length-1].attribute("draggable", "false");
+    imageList[imageList.length-1].attribute('height', 47 * windowWidth * 0.002);
+    imageList[imageList.length-1].attribute('width', 27 * windowWidth * 0.002);
     meteorXPositions.push(Math.random() * (windowWidth - (27 * windowWidth * 0.002)));
     meteorYPositions.push(-300);
   }
-  for(i = 0; i < meteorXPositions.length; i++) 
+  for(i = 0; i < meteorXPositions.length; i++) //Removes meteors when off screen
   {
-    gif_createImg.position(meteorXPositions[i], meteorYPositions[i]);
+    imageList[i].position(meteorXPositions[i], meteorYPositions[i]);
+    if(meteorYPositions[i] > windowHeight + (47 * windowWidth * 0.002)) 
+    {
+      imageList[0].remove();
+      imageList.shift();
+      meteorXPositions.shift();
+      meteorYPositions.shift();
+      i--;
+    }
+    else if((meteorXPositions[i] ) && (meteorYPositions[i] > (windowHeight * 0.87) - (windowWidth * 0.03))) 
+    {     //^Still need to impliment x cordinate collision with paddle, define variable for paddle pos
+      //Collision happens, remove imagelist/shift, give/remove points
+    }
   }
-
   paddle.over();
   paddle.update();
   paddle.show();
-  //meteor1.update();
-  //meteor1.contactCheck()
-  //meteor1.resetCheck();
 }
 
 function updateGame() 
@@ -68,51 +63,6 @@ function mousePressed() {
 function mouseReleased() {
   paddle.released();
 }
-
-class Falling {
-  constructor(fof) {  //friend or foe, will object destroy paddle? Friend = true
-    this.fof = fof;
-    this.x = x;
-    this.y = y;
-  }
-  start() { //Randomizes a region to start in and determines starting x position to fall
-    section = windowWidth/10;
-    var space = [];
-    for (var i = 1; i < 11; ++i) {
-      space[i] = i;
-    }
-    this.x = 200;//space[int(random(0,11))] * section;
-    this.y = 50; 
-    console.log(this.x);
-  }
-  
-  contactCheck() { //check if collision with paddle
-    if(fof) { //gain point
-      score++;
-    }
-    else {  //lose point
-      score--;
-    }
-    if(score >= 15) {
-      //GAME OVER STOP PROGRAM
-    }
-    if(this.y >= windowHeight * 0.87) {// /* PADDLE POSITION X ) {
-      this.y = windowWidth - 50; //will triger resetCheck()
-    }
-  }
-  /*
-  resetCheck() {  //check if object has reached bottom so can restart
-    if(this.y <= windowWidth) {
-      this.start();
-    }
-  }
-  */
-  update() {  //update falling position and display
-    this.y = this.y + speed;
-    gif_createImg.position(x, y);
-  }
-}
-
 class Draggable {
   constructor(x, y, w, h) {
     this.dragging = false; // Is the object being dragged?
