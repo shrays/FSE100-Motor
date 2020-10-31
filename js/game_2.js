@@ -1,32 +1,65 @@
 var gif_loadImg, gif_createImg;
 let section, paddle, meteor1;
-let speed = 1.5;
+let speed = 5;
 let score = 0;
-let y = 0;
+//let y = 0;
+//let x = 0;
 
-function preload() {
+let meteorXPositions;
+let meteorYPositions;
+
+let imageList;
+
+function preload() 
+{
   gif_loadImg = loadImage("Images/Meteor.gif");
-  //gif_createImg = createImg("Images/Meteor.gif");
+  gif_createImg = createImg("Images/Meteor.gif");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   paddle = new Draggable(windowWidth/2, windowHeight * 0.87, windowWidth * 0.15, windowWidth * 0.03); // x y w h
-  meteor1 = new Falling(false);
-  meteor1.start();
+  //meteor1 = new Falling(false);
+  meteorXPositions = [];
+  meteorYPositions = [];
+  imageList.push(createImg("Images/Meteor.gif"));
+
+  meteorXPositions.push(Math.random() * (windowWidth - (27 * windowWidth * 0.002)));
+  meteorYPositions.push(-300);
+  gif_createImg.attribute('height', 47 * windowWidth * 0.002);
+  gif_createImg.attribute('width', 27 * windowWidth * 0.002);
 
 }
 
-function draw() {
+function draw() 
+{
+  updateGame();
   clear();
   
+  if(frameCount % 60 == 0) 
+  {
+    meteorXPositions.push(Math.random() * (windowWidth - (27 * windowWidth * 0.002)));
+    meteorYPositions.push(-300);
+  }
+  for(i = 0; i < meteorXPositions.length; i++) 
+  {
+    gif_createImg.position(meteorXPositions[i], meteorYPositions[i]);
+  }
+
   paddle.over();
   paddle.update();
   paddle.show();
+  //meteor1.update();
+  //meteor1.contactCheck()
+  //meteor1.resetCheck();
+}
 
-  meteor1.update();
-  meteor1.contactCheck()
-  meteor1.resetCheck();
+function updateGame() 
+{  
+  for(i = 0; i < meteorYPositions.length; i++) 
+  {
+    meteorYPositions[i] += speed;
+  }
 }
 
 function mousePressed() {
@@ -48,9 +81,11 @@ class Falling {
     for (var i = 1; i < 11; ++i) {
       space[i] = i;
     }
-    this.x = space[int(random(0,11))] * section();
-    this.y = -50; 
+    this.x = 200;//space[int(random(0,11))] * section;
+    this.y = 50; 
+    console.log(this.x);
   }
+  
   contactCheck() { //check if collision with paddle
     if(fof) { //gain point
       score++;
@@ -61,15 +96,17 @@ class Falling {
     if(score >= 15) {
       //GAME OVER STOP PROGRAM
     }
-    if(this.y >= windowHeight * 0.87 && this.x /* PADDLE POSITION X */) {
+    if(this.y >= windowHeight * 0.87) {// /* PADDLE POSITION X ) {
       this.y = windowWidth - 50; //will triger resetCheck()
     }
   }
+  /*
   resetCheck() {  //check if object has reached bottom so can restart
     if(this.y <= windowWidth) {
       this.start();
     }
   }
+  */
   update() {  //update falling position and display
     this.y = this.y + speed;
     gif_createImg.position(x, y);
