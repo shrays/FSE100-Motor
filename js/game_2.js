@@ -4,11 +4,17 @@ let meteorXPositions;
 let meteorYPositions;
 let imageList;
 
+/*-------------------------------------------------------------------------------
+// THINGS TO ADD:
+// Scoreboard based on time survived, Paddle collision, bounding box
+// OPTIONAL:
+// Turtle in background
+-------------------------------------------------------------------------------*/
+
 function setup() 
 {
   createCanvas(windowWidth, windowHeight);
   paddle = new Draggable(windowWidth/2, windowHeight * 0.87, windowWidth * 0.15, windowWidth * 0.03); // x y w h
-
   meteorXPositions = [];
   meteorYPositions = [];
   imageList = [];
@@ -26,7 +32,7 @@ function draw()
     imageList[imageList.length-1].attribute('height', 47 * windowWidth * 0.002);
     imageList[imageList.length-1].attribute('width', 27 * windowWidth * 0.002);
     meteorXPositions.push(Math.random() * (windowWidth - (27 * windowWidth * 0.002)));
-    meteorYPositions.push(-300);
+    meteorYPositions.push(-200);
   }
   for(i = 0; i < meteorXPositions.length; i++) //Removes meteors when off screen
   {
@@ -49,14 +55,9 @@ function draw()
   paddle.show();
 }
 
-function updateGame() 
-{  
-  for(i = 0; i < meteorYPositions.length; i++) 
-  {
-    meteorYPositions[i] += speed;
-  }
+function updateGame() {  
+  for(i = 0; i < meteorYPositions.length; i++) {meteorYPositions[i] += speed;}
 }
-
 function mousePressed() {
   paddle.pressed();
 }
