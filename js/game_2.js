@@ -6,6 +6,7 @@ let imageList;
 
 /*-------------------------------------------------------------------------------
 // THINGS TO ADD:
+// Hitbox for paddle, anti scrolling, arrow key support, 3 lives paddle becomes green yellow red
 // Scoreboard based on time survived, Paddle collision, bounding box
 // OPTIONAL:
 // Turtle in background
@@ -46,8 +47,10 @@ function draw()
       meteorYPositions.shift();
       i--;
     }
-    else if(meteorYPositions[i] >= (paddle.getPosY()) - (47 * windowWidth * 0.002)) //Height value is too small? Paddle Height - Meteor Height
-    { 
+    else if(  meteorYPositions[i] >= (paddle.getPosY() - (47 * windowWidth * 0.002) + windowWidth * 0.007) && //windowWith * 0.007 is manual correction
+              (meteorXPositions[i] > paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
+              meteorXPositions[i] < (paddle.getPosX() + windowWidth * 0.15)) 
+    {     //Height value is too small? Paddle Height - Meteor Height
       // Y VALUES : windowHeight * 0.87 OR meteorYPositions < (paddle.getPosY() - paddle.getHeight()) OR paddle.getPosY() OR windowHeight * 0.87
       // X VALUES : meteorXPositions[i] <= paddle.getPosX() && meteorXPositions[i] <= paddle.getPosX() + windowWidth * 0.03 && 
       //Collision happens, remove imagelist/shift, give/remove points
