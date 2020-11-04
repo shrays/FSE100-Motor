@@ -50,9 +50,7 @@ function draw()
     else if(  meteorYPositions[i] >= (paddle.getPosY() - (47 * windowWidth * 0.002) + windowWidth * 0.007) && //windowWith * 0.007 is manual correction
               (meteorXPositions[i] > paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
               meteorXPositions[i] < (paddle.getPosX() + windowWidth * 0.15)) 
-    {     //Height value is too small? Paddle Height - Meteor Height
-      // Y VALUES : windowHeight * 0.87 OR meteorYPositions < (paddle.getPosY() - paddle.getHeight()) OR paddle.getPosY() OR windowHeight * 0.87
-      // X VALUES : meteorXPositions[i] <= paddle.getPosX() && meteorXPositions[i] <= paddle.getPosX() + windowWidth * 0.03 && 
+    {
       //Collision happens, remove imagelist/shift, give/remove points
       imageList[0].remove();
       imageList.shift();
@@ -138,13 +136,5 @@ class Draggable {
   getPosY() 
   {
     return this.y;
-  }
-  getWidth()
-  {
-    return this.w;
-  }
-  getHeight()
-  {
-    return this.h;
   }
 }
