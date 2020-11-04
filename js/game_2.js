@@ -4,11 +4,18 @@ let meteorXPositions;
 let meteorYPositions;
 let imageList;
 
+/*-------------------------------------------------------------------------------
+// THINGS TO ADD:
+// Hitbox for paddle, anti scrolling, arrow key support, 3 lives paddle becomes green yellow red
+// Scoreboard based on time survived, Paddle collision, bounding box
+// OPTIONAL:
+// Turtle in background
+-------------------------------------------------------------------------------*/
+
 function setup() 
 {
   createCanvas(windowWidth, windowHeight);
   paddle = new Draggable(windowWidth/2, windowHeight * 0.87, windowWidth * 0.15, windowWidth * 0.03); // x y w h
-
   meteorXPositions = [];
   meteorYPositions = [];
   imageList = [];
@@ -18,6 +25,7 @@ function draw()
 {
   updateGame(); //updates meteor pos
   clear();
+  print(meteorXPositions.length); // TEST: prints how many meteors present
   if(frameCount % 60 == 0) //every 1 second, create new meteor with position
   {
     imageList.push(createImg("Images/Meteor.gif"));
@@ -26,12 +34,12 @@ function draw()
     imageList[imageList.length-1].attribute('height', 47 * windowWidth * 0.002);
     imageList[imageList.length-1].attribute('width', 27 * windowWidth * 0.002);
     meteorXPositions.push(Math.random() * (windowWidth - (27 * windowWidth * 0.002)));
-    meteorYPositions.push(-300);
+    meteorYPositions.push(-200);
   }
-  for(i = 0; i < meteorXPositions.length; i++) //Removes meteors when off screen
+  for(i = 0; i < meteorXPositions.length; i++) //Cycles through every objects positions
   {
-    imageList[i].position(meteorXPositions[i], meteorYPositions[i]);
-    if(meteorYPositions[i] > windowHeight + (47 * windowWidth * 0.002)) 
+    imageList[i].position(meteorXPositions[i], meteorYPositions[i]);  //Sets image positions
+    if(meteorYPositions[i] > 0.9 * (windowHeight + (47 * windowWidth * 0.002))) //Removes meteors when off screen
     {
       imageList[0].remove();
       imageList.shift();
@@ -39,9 +47,18 @@ function draw()
       meteorYPositions.shift();
       i--;
     }
-    else if((meteorXPositions[i] ) && (meteorYPositions[i] > (windowHeight * 0.87) - (windowWidth * 0.03))) 
-    {     //^Still need to impliment x cordinate collision with paddle, define variable for paddle pos
+    else if(  meteorYPositions[i] >= (paddle.getPosY() - (47 * windowWidth * 0.002) + windowWidth * 0.007) && //windowWith * 0.007 is manual correction
+              (meteorXPositions[i] > paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
+              meteorXPositions[i] < (paddle.getPosX() + windowWidth * 0.15)) 
+    {     //Height value is too small? Paddle Height - Meteor Height
+      // Y VALUES : windowHeight * 0.87 OR meteorYPositions < (paddle.getPosY() - paddle.getHeight()) OR paddle.getPosY() OR windowHeight * 0.87
+      // X VALUES : meteorXPositions[i] <= paddle.getPosX() && meteorXPositions[i] <= paddle.getPosX() + windowWidth * 0.03 && 
       //Collision happens, remove imagelist/shift, give/remove points
+      imageList[0].remove();
+      imageList.shift();
+      meteorXPositions.shift();
+      meteorYPositions.shift();
+      i--;
     }
   }
   paddle.over();
@@ -51,18 +68,19 @@ function draw()
 
 function updateGame() 
 {  
-  for(i = 0; i < meteorYPositions.length; i++) 
-  {
-    meteorYPositions[i] += speed;
-  }
+  for(i = 0; i < meteorYPositions.length; i++) {meteorYPositions[i] += speed;}
 }
 
-function mousePressed() {
+function mousePressed() 
+{
   paddle.pressed();
 }
-function mouseReleased() {
+
+function mouseReleased() 
+{
   paddle.released();
 }
+
 class Draggable {
   constructor(x, y, w, h) {
     this.dragging = false; // Is the object being dragged?
@@ -112,5 +130,21 @@ class Draggable {
   released() {
     // Quit dragging
     this.dragging = false;
+  }
+  getPosX() 
+  {
+    return this.x;
+  }
+  getPosY() 
+  {
+    return this.y;
+  }
+  getWidth()
+  {
+    return this.w;
+  }
+  getHeight()
+  {
+    return this.h;
   }
 }
