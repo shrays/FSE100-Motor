@@ -2,4 +2,6 @@ body {
     background:
       url(/Images/spaceBackground.png) repeat;
     background-size: cover;
+    overflow: hidden;
+
   }

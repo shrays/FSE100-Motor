@@ -3,14 +3,15 @@ let speed = 5;
 let meteorXPositions;
 let meteorYPositions;
 let imageList;
+let lives;
 
-/*-------------------------------------------------------------------------------
+/*-----------------------------------------------------------------------------------------------------
 // THINGS TO ADD:
-// Hitbox for paddle, anti scrolling, arrow key support, 3 lives paddle becomes green yellow red
-// Scoreboard based on time survived, Paddle collision, bounding box
+//  anti scrolling, arrow key support, CHANGE METEOR HITBOX: Hitting top of box with bottom of paddle
+// Scoreboard based on time survived and lives
 // OPTIONAL:
 // Turtle in background
--------------------------------------------------------------------------------*/
+-----------------------------------------------------------------------------------------------------*/
 
 function setup() 
 {
@@ -19,6 +20,7 @@ function setup()
   meteorXPositions = [];
   meteorYPositions = [];
   imageList = [];
+  lives = 5;
 }
 
 function draw() 
@@ -57,6 +59,7 @@ function draw()
       meteorXPositions.shift();
       meteorYPositions.shift();
       i--;
+      lives--;
     }
   }
   paddle.over();
@@ -106,12 +109,53 @@ class Draggable {
   }
   show() {
     stroke(0);
-    // Different fill based on state
-    if (this.dragging) {
-      //noStroke();
-      fill(50);
-    } else if (this.rollover) {
-      fill(100);
+    // Different fill based on state      Light gray - hover: darker lives color - dragging: lives color
+    if (this.dragging) {  //dragging
+      switch(lives)
+      {
+        case 5:
+          fill(0,255,0);
+          break;
+        case 4:
+          fill(128,255,0);
+          break;
+        case 3:
+          fill(255,255,0);
+          break;
+        case 2:
+          fill(255,128,0);
+          break;
+        case 1:
+          fill(255,0,0);
+          break;
+        default:
+          fill(0,0,0);
+          break;
+      }
+      //fill(50);
+    } else if (this.rollover) { //hover
+      switch(lives)
+      {
+        case 5:
+          fill(0,153,0);
+          break;
+        case 4:
+          fill(76,255,0);
+          break;
+        case 3:
+          fill(153,153,0);
+          break;
+        case 2:
+          fill(153,76,0);
+          break;
+        case 1:
+          fill(153,0,0);
+          break;
+        default:
+          fill(0,0,0);
+          break;
+      }
+      //fill(100);
     } else {
       fill(175, 200);
     }
