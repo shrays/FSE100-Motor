@@ -4,6 +4,7 @@ body {
     url(/Images/turtleBackground.png) no-repeat,
     url(/Images/spaceBackground.png) repeat;
   background-size: cover, cover;
+  overflow: hidden;
 }
 
 #button1 {

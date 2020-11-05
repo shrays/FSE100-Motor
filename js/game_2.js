@@ -3,14 +3,15 @@ let speed = 5;
 let meteorXPositions;
 let meteorYPositions;
 let imageList;
+let lives;
 
-/*-------------------------------------------------------------------------------
+/*-----------------------------------------------------------------------------------------------------
 // THINGS TO ADD:
-// Hitbox for paddle, anti scrolling, arrow key support, 3 lives paddle becomes green yellow red
-// Scoreboard based on time survived, Paddle collision, bounding box
+//  anti scrolling, arrow key support, CHANGE METEOR HITBOX: Hitting top of box with bottom of paddle
+// Scoreboard based on time survived and lives
 // OPTIONAL:
 // Turtle in background
--------------------------------------------------------------------------------*/
+-----------------------------------------------------------------------------------------------------*/
 
 function setup() 
 {
@@ -19,6 +20,7 @@ function setup()
   meteorXPositions = [];
   meteorYPositions = [];
   imageList = [];
+  lives = 5;
 }
 
 function draw() 
@@ -50,15 +52,14 @@ function draw()
     else if(  meteorYPositions[i] >= (paddle.getPosY() - (47 * windowWidth * 0.002) + windowWidth * 0.007) && //windowWith * 0.007 is manual correction
               (meteorXPositions[i] > paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
               meteorXPositions[i] < (paddle.getPosX() + windowWidth * 0.15)) 
-    {     //Height value is too small? Paddle Height - Meteor Height
-      // Y VALUES : windowHeight * 0.87 OR meteorYPositions < (paddle.getPosY() - paddle.getHeight()) OR paddle.getPosY() OR windowHeight * 0.87
-      // X VALUES : meteorXPositions[i] <= paddle.getPosX() && meteorXPositions[i] <= paddle.getPosX() + windowWidth * 0.03 && 
+    {
       //Collision happens, remove imagelist/shift, give/remove points
       imageList[0].remove();
       imageList.shift();
       meteorXPositions.shift();
       meteorYPositions.shift();
       i--;
+      lives--;
     }
   }
   paddle.over();
@@ -108,12 +109,53 @@ class Draggable {
   }
   show() {
     stroke(0);
-    // Different fill based on state
-    if (this.dragging) {
-      //noStroke();
-      fill(50);
-    } else if (this.rollover) {
-      fill(100);
+    // Different fill based on state      Light gray - hover: darker lives color - dragging: lives color
+    if (this.dragging) {  //dragging
+      switch(lives)
+      {
+        case 5:
+          fill(0,255,0);
+          break;
+        case 4:
+          fill(128,255,0);
+          break;
+        case 3:
+          fill(255,255,0);
+          break;
+        case 2:
+          fill(255,128,0);
+          break;
+        case 1:
+          fill(255,0,0);
+          break;
+        default:
+          fill(0,0,0);
+          break;
+      }
+      //fill(50);
+    } else if (this.rollover) { //hover
+      switch(lives)
+      {
+        case 5:
+          fill(0,153,0);
+          break;
+        case 4:
+          fill(76,255,0);
+          break;
+        case 3:
+          fill(153,153,0);
+          break;
+        case 2:
+          fill(153,76,0);
+          break;
+        case 1:
+          fill(153,0,0);
+          break;
+        default:
+          fill(0,0,0);
+          break;
+      }
+      //fill(100);
     } else {
       fill(175, 200);
     }
@@ -138,13 +180,5 @@ class Draggable {
   getPosY() 
   {
     return this.y;
-  }
-  getWidth()
-  {
-    return this.w;
-  }
-  getHeight()
-  {
-    return this.h;
   }
 }
