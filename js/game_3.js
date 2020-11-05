@@ -1,5 +1,5 @@
 let seq, rows, cols, slots, interval, playing, recordedSeq, currentSeqIndex, expectedRecordedSeqIndex, win, lose;
-lose=0;
+lose=0, score=0;
 function setup() {
 	cols = 3;
 	rows = 3;
@@ -7,14 +7,14 @@ function setup() {
   interval = 1000;
   playing = false;
   
-  createCanvas(400, 400);
+  createCanvas(1000,1000);
   
-	let w = width/cols;
-	let h = height/rows;
+	let w = 600/cols ;
+	let h = 600/rows;
 	let i = 0;
 	slots = [];
-	for(let x = 0; x < width; x+=w){
-		for(let y = 0; y < height; y+=h){
+	for(let x = 200; x < 800; x+=w){
+		for(let y = 200; y < 800; y+=h){
 			slots.push({
 				i,
 				x,
@@ -81,7 +81,7 @@ function mouseClicked(){
       //Checks if the user input is the same as the expected
       if(c.i == seq[expectedRecordedSeqIndex]){
         if(expectedRecordedSeqIndex == seq.length-1){
-          
+          score++;
           win = 1;
           setTimeout(() => {createSeq(++len)}, interval*2);
         }
@@ -108,7 +108,14 @@ function mouseClicked(){
 }
 
 function draw() {
-  background(220);
+  fill('black');
+  rect(410, 100, 200, 70);
+  textAlign(CENTER);
+  textSize(50);
+  fill('white')
+  text('Score: ', width/2 , 150);
+  text(score, width/2+75 , 150)
+  //background(0);
 	for(const s of slots){
 		push();
 		fill((s.a ? s.c : 0));
@@ -117,7 +124,9 @@ function draw() {
 		rect(s.x, s.y, s.w, s.h);
     if(s.a){
       fill(255);
-    	text((playing ? expectedRecordedSeqIndex: currentSeqIndex), s.x+s.w/2, s.y+s.h/2);
+      text((playing ? expectedRecordedSeqIndex: currentSeqIndex), s.x+s.w/2, s.y+s.h/2);
+      
+
     }
 		pop();
     push();
@@ -129,14 +138,23 @@ function draw() {
       rect(width/2, height/2, 200, 70);
       fill('green');
       text('Correct !', width/2, height/2+10);
+      fill('white');
+      
+
     }else if(win == -1){
       rect(width/2, height/2, 200, 70);
       fill('red');
       text('Incorrect !', width/2, height/2+10);
     }else if(lose==-3){
-      rect(width/2, height/2, 400, 400);
+      rect(width/2, height/2, 600, 600);
       fill('red');
       text('You Lose !', width/2, height/2+10);
+      playing=false;
+
+    }else if(score==5){
+      rect(width/2, height/2, 600, 600);
+      fill('green');
+      text('You Win !', width/2, height/2+10);
       playing=false;
 
     }
