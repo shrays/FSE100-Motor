@@ -1,14 +1,14 @@
 
 body { 
   background:
-    url(/Images/turtleBackground.png) no-repeat,
-    url(/Images/spaceBackground.png) repeat;
+    url(../Images/turtleBackground.png) no-repeat,
+    url(../Images/spaceBackground.png) repeat;
   background-size: cover, cover;
   overflow: hidden;
 }
 
 #button1 {
-  background-image: url(/Images/mButton1.png);
+  background-image: url(../Images/mButton1.png);
   background-size: cover;
   background-color: transparent;
   border: none;
@@ -20,11 +20,11 @@ body {
 }
 
 #button1:hover {
-  background-image: url(/Images/mButton1C.png);
+  background-image: url(../Images/mButton1C.png);
 }
 
 #button2 {
-  background-image: url(/Images/mButton2.png);
+  background-image: url(../Images/mButton2.png);
   background-size: cover;
   background-color: transparent;
   border: none;
@@ -35,11 +35,11 @@ body {
   height: 7.538vw;
 }
 #button2:hover {
-  background-image: url(/Images/mButton2C.png);
+  background-image: url(../Images/mButton2C.png);
 }
 
 #button3 {
-  background-image: url(/Images/mButton3.png);
+  background-image: url(../Images/mButton3.png);
   background-size: cover;
   background-color: transparent;
   border: none;
@@ -50,11 +50,11 @@ body {
   height: 7.538vw;
 }
 #button3:hover {
-  background-image: url(/Images/mButton3C.png);
+  background-image: url(../Images/mButton3C.png);
 }
 
 #button4 {
-  background-image: url(/Images/mButton4.png);
+  background-image: url(../Images/mButton4.png);
   background-size: cover;
   background-color: transparent;
   border: none;
@@ -65,7 +65,7 @@ body {
   height: 7.538vw;
 }
 #button4:hover {
-  background-image: url(/Images/mButton4C.png);
+  background-image: url(../Images/mButton4C.png);
 }
 
 /* width height same, left= percent of left x bound
