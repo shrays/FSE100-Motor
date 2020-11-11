@@ -156,8 +156,26 @@ class Draggable {
   }
   update() {
     // Adjust location if being dragged
+    // this.x = mouseX + this.offsetX;
     if (this.dragging) {
-      this.x = mouseX + this.offsetX;
+      if(this.x <= 0)
+      {
+        if(this.offsetX > 0 )
+        {
+          this.x = mouseX + this.offsetX;
+        }
+      }
+      else if(this.x + (windowWidth * 0.15) >= windowWidth)
+      {
+        if(this.offsetX < 0 )
+        {
+          this.x = mouseX + this.offsetX;
+        }
+      }
+      else
+      {
+        this.x = mouseX + this.offsetX;
+      }
     }
   }
   show() {
