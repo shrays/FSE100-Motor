@@ -1,13 +1,18 @@
+
+
+// TESTING ALTERNATE GAME 2
 let paddle;
 let speed = 5;
-let meteorXPositions;
-let meteorYPositions;
-let imageList;
+
+let meteorXPositions, meteorYPositions, meteorList;
 let lives;
+
+let starXPositions, starYPositions, starList;
+let points;
 
 /*-----------------------------------------------------------------------------------------------------
 // THINGS TO ADD:
-//  anti scrolling, arrow key support, CHANGE METEOR HITBOX: Hitting top of box with bottom of paddle
+// CHANGE METEOR HITBOX: Hitting top of box with bottom of paddle
 // Scoreboard based on time survived and lives
 // OPTIONAL:
 // Turtle in background
@@ -19,47 +24,91 @@ function setup()
   paddle = new Draggable(windowWidth/2, windowHeight * 0.87, windowWidth * 0.15, windowWidth * 0.03); // x y w h
   meteorXPositions = [];
   meteorYPositions = [];
-  imageList = [];
+  meteorList = [];
   lives = 5;
+  starXPositions = [];
+  starYPositions = [];
+  starList = [];
+  points = 0;
 }
 
 function draw() 
 {
-  updateGame(); //updates meteor pos
+  paddle.setWindow(windowHeight * 0.87, windowWidth * 0.15, windowWidth * 0.03);
+  updateMeteor(); //updates meteor pos
+  updateStar();
   clear();
   print(meteorXPositions.length); // TEST: prints how many meteors present
+  print(starXPositions.length);
   if(frameCount % 60 == 0) //every 1 second, create new meteor with position
   {
-    imageList.push(createImg("Images/Meteor.gif"));
-    imageList[imageList.length-1].style("user-select", "none");
-    imageList[imageList.length-1].attribute("draggable", "false");
-    imageList[imageList.length-1].attribute('height', 47 * windowWidth * 0.002);
-    imageList[imageList.length-1].attribute('width', 27 * windowWidth * 0.002);
+    meteorList.push(createImg("Images/Meteor.gif"));
+    meteorList[meteorList.length-1].style("user-select", "none");
+    meteorList[meteorList.length-1].attribute("draggable", "false");
+    meteorList[meteorList.length-1].attribute('height', 47 * windowWidth * 0.002);
+    meteorList[meteorList.length-1].attribute('width', 27 * windowWidth * 0.002);
     meteorXPositions.push(Math.random() * (windowWidth - (27 * windowWidth * 0.002)));
     meteorYPositions.push(-200);
   }
+  if(frameCount % 150 == 0) //every 1 second, create new meteor with position
+  {
+    starList.push(createImg("Images/Star.gif"));
+    starList[starList.length-1].style("user-select", "none");
+    starList[starList.length-1].attribute("draggable", "false");
+    starList[starList.length-1].attribute('height', 27 * windowWidth * 0.002);
+    starList[starList.length-1].attribute('width', 27 * windowWidth * 0.002);
+    starXPositions.push(Math.random() * (windowWidth - (27 * windowWidth * 0.002)));
+    starYPositions.push(-200);
+  }
   for(i = 0; i < meteorXPositions.length; i++) //Cycles through every objects positions
   {
-    imageList[i].position(meteorXPositions[i], meteorYPositions[i]);  //Sets image positions
+    meteorList[i].position(meteorXPositions[i], meteorYPositions[i]);  //Sets image positions
     if(meteorYPositions[i] > 0.9 * (windowHeight + (47 * windowWidth * 0.002))) //Removes meteors when off screen
     {
-      imageList[0].remove();
-      imageList.shift();
+      meteorList[0].remove();
+      meteorList.shift();
       meteorXPositions.shift();
       meteorYPositions.shift();
       i--;
     }
     else if(  meteorYPositions[i] >= (paddle.getPosY() - (47 * windowWidth * 0.002) + windowWidth * 0.007) && //windowWith * 0.007 is manual correction
-              (meteorXPositions[i] > paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
-              meteorXPositions[i] < (paddle.getPosX() + windowWidth * 0.15)) 
+              meteorYPositions[i] <= (paddle.getPosY()) && //bottom of paddle
+              meteorXPositions[i] >= (paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
+              meteorXPositions[i] <= (paddle.getPosX() + windowWidth * 0.15) )
     {
-      //Collision happens, remove imagelist/shift, give/remove points
-      imageList[0].remove();
-      imageList.shift();
+      print("MeteorYpos:" + meteorYPositions[i] + " paddleYPos: " + paddle.getPosY() + " minus " + ((47 * windowWidth * 0.002) + windowWidth * 0.007) + "windowHeight: " + windowHeight);
+      //Collision happens, remove meteorList/shift, give/remove points
+      meteorList[0].remove();
+      meteorList.shift();
       meteorXPositions.shift();
       meteorYPositions.shift();
       i--;
       lives--;
+    }
+  }
+  for(i = 0; i < starXPositions.length; i++) //Cycles through every objects positions
+  {
+    starList[i].position(starXPositions[i], starYPositions[i]);  //Sets image positions
+    if(starYPositions[i] > 0.9 * (windowHeight + (27 * windowWidth * 0.002))) //Removes meteors when off screen
+    {
+      starList[0].remove();
+      starList.shift();
+      starXPositions.shift();
+      starYPositions.shift();
+      i--;
+    }
+    else if(  starYPositions[i] >= (paddle.getPosY() - (27 * windowWidth * 0.002) + windowWidth * 0.007) && //windowWith * 0.007 is manual correction
+              starYPositions[i] <= (paddle.getPosY()) && //bottom of paddle
+              starXPositions[i] >= (paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
+              starXPositions[i] <= (paddle.getPosX() + windowWidth * 0.15) )
+    {
+      //Collision happens, remove meteorList/shift, give/remove points
+      starList[0].remove();
+      starList.shift();
+      starXPositions.shift();
+      starYPositions.shift();
+      i--;
+      points++;
     }
   }
   paddle.over();
@@ -67,9 +116,13 @@ function draw()
   paddle.show();
 }
 
-function updateGame() 
+function updateMeteor() 
 {  
   for(i = 0; i < meteorYPositions.length; i++) {meteorYPositions[i] += speed;}
+}
+function updateStar()
+{
+  for(i = 0; i < starYPositions.length; i++) {starYPositions[i] += speed;}
 }
 
 function mousePressed() 
@@ -180,5 +233,11 @@ class Draggable {
   getPosY() 
   {
     return this.y;
+  }
+  setWindow(y, w, h)
+  {
+    this.y = y;
+    this.w = w;
+    this.h = h;
   }
 }
