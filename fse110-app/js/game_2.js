@@ -1,23 +1,21 @@
-
-
-// TESTING ALTERNATE GAME 2
-let paddle;
+let paddle, turtle;
+let font;
 let speed = 5;
 
 let meteorXPositions, meteorYPositions, meteorList;
 let lives;
-
 let starXPositions, starYPositions, starList;
 let points;
 
 /*-----------------------------------------------------------------------------------------------------
 // THINGS TO ADD:
-// CHANGE METEOR HITBOX: Hitting top of box with bottom of paddle
-// Scoreboard based on time survived and lives
-// OPTIONAL:
 // Turtle in background
 -----------------------------------------------------------------------------------------------------*/
 
+function preload()
+{
+  font = loadFont('Images/AmericanCaptain.ttf');
+}
 function setup() 
 {
   createCanvas(windowWidth, windowHeight);
@@ -25,7 +23,7 @@ function setup()
   meteorXPositions = [];
   meteorYPositions = [];
   meteorList = [];
-  lives = 5;
+  lives = 1;
   starXPositions = [];
   starYPositions = [];
   starList = [];
@@ -38,8 +36,25 @@ function draw()
   updateMeteor(); //updates meteor pos
   updateStar();
   clear();
-  print(meteorXPositions.length); // TEST: prints how many meteors present
-  print(starXPositions.length);
+
+  if(lives == 0)
+  {
+    for(i = 0; i < meteorList.length; i++)
+    {
+      meteorList[i].remove();
+    }
+    for(i = 0; i < starList.length; i++)
+    {
+      starList[i].remove();
+    }
+    gameOver();
+  }
+
+  textFont(font, windowWidth * 0.04);
+  fill(255);
+  text('Points: ' + points, windowWidth * 0.35, windowHeight * 0.1);
+  text('Lives: ' + lives, windowWidth * 0.55, windowHeight * 0.1);
+
   if(frameCount % 60 == 0) //every 1 second, create new meteor with position
   {
     meteorList.push(createImg("Images/Meteor.gif"));
@@ -76,7 +91,6 @@ function draw()
               meteorXPositions[i] >= (paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
               meteorXPositions[i] <= (paddle.getPosX() + windowWidth * 0.15) )
     {
-      print("MeteorYpos:" + meteorYPositions[i] + " paddleYPos: " + paddle.getPosY() + " minus " + ((47 * windowWidth * 0.002) + windowWidth * 0.007) + "windowHeight: " + windowHeight);
       //Collision happens, remove meteorList/shift, give/remove points
       meteorList[0].remove();
       meteorList.shift();
@@ -135,6 +149,23 @@ function mouseReleased()
   paddle.released();
 }
 
+function gameOver()
+{
+  fill(255, 0, 0, 150);
+  rect(0, 0, windowWidth, windowHeight);
+  
+  fill("white");
+  textFont(font, windowWidth * 0.25);
+  text('Game Over!', windowWidth * 0.02, windowHeight * 0.67);
+  
+  fill("white");
+  textFont(font, windowWidth * 0.08);
+  text('You scored ' + points + ' points', windowWidth * 0.04, windowHeight * 0.8);
+
+  //turtle = createImg("Images/mButton1.png");
+  noLoop();
+}
+
 class Draggable {
   constructor(x, y, w, h) {
     this.dragging = false; // Is the object being dragged?
@@ -157,6 +188,12 @@ class Draggable {
   update() {
     // Adjust location if being dragged
     // this.x = mouseX + this.offsetX;
+    if (this.dragging) 
+    {
+      this.x = mouseX + this.offsetX;
+    }
+
+    /*
     if (this.dragging) {
       if(this.x <= 0)
       {
@@ -177,9 +214,10 @@ class Draggable {
         this.x = mouseX + this.offsetX;
       }
     }
+    */
   }
   show() {
-    stroke(0);
+    noStroke();
     // Different fill based on state      Light gray - hover: darker lives color - dragging: lives color
     if (this.dragging) {  //dragging
       switch(lives)
@@ -200,7 +238,7 @@ class Draggable {
           fill(255,0,0);
           break;
         default:
-          fill(0,0,0);
+          fill(0,0,0,0);
           break;
       }
       //fill(50);
@@ -223,12 +261,20 @@ class Draggable {
           fill(153,0,0);
           break;
         default:
-          fill(0,0,0);
+          fill(0,0,0,0);
           break;
       }
       //fill(100);
     } else {
-      fill(175, 200);
+      switch(lives)
+      {
+        case 0:
+          fill(0,0,0,0);
+          break;
+        default:
+          fill(175, 200);
+          break;
+      }
     }
     rect(this.x, this.y, this.w, this.h);
   }
