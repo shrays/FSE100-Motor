@@ -23,7 +23,7 @@ function setup()
   meteorXPositions = [];
   meteorYPositions = [];
   meteorList = [];
-  lives = 1;
+  lives = 5;
   starXPositions = [];
   starYPositions = [];
   starList = [];
@@ -52,6 +52,7 @@ function draw()
 
   textFont(font, windowWidth * 0.04);
   fill(255);
+  strokeWeight(0);
   text('Points: ' + points, windowWidth * 0.35, windowHeight * 0.1);
   text('Lives: ' + lives, windowWidth * 0.55, windowHeight * 0.1);
 
@@ -151,16 +152,36 @@ function mouseReleased()
 
 function gameOver()
 {
-  fill(255, 0, 0, 150);
+  fill(0, 0, 255, 100);
   rect(0, 0, windowWidth, windowHeight);
   
   fill("white");
-  textFont(font, windowWidth * 0.25);
-  text('Game Over!', windowWidth * 0.02, windowHeight * 0.67);
+  //stroke(0,0,0);
+  //strokeWeight(8);
+  textFont(font, windowWidth * 0.2);
+
+  switch(Math.floor(points / 5))
+  {
+    case 0:
+      textFont(font, windowWidth * 0.125);  
+      text('Better luck next time', windowWidth * 0.04, windowHeight * 0.67);
+      break;
+    case 1:
+      text('Good Job!', windowWidth * 0.04, windowHeight * 0.67);
+      break;
+    case 2:
+      text('Wow!', windowWidth * 0.04, windowHeight * 0.67);
+      break;
+    default:
+      text('Amazing!', windowWidth * 0.04, windowHeight * 0.67);
+      break;
+
+  }
+
   
   fill("white");
   textFont(font, windowWidth * 0.08);
-  text('You scored ' + points + ' points', windowWidth * 0.04, windowHeight * 0.8);
+  text('You got ' + points + ' points. Try again?', windowWidth * 0.04, windowHeight * 0.8);
 
   //turtle = createImg("Images/mButton1.png");
   noLoop();
