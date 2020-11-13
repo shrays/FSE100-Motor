@@ -1,5 +1,5 @@
 let seq, rows, cols, slots, interval, playing, recordedSeq, currentSeqIndex, expectedRecordedSeqIndex, win, lose;
-lose=0, score=0;
+lose=3, score=0;
 function setup() {
 	cols = 3;
 	rows = 3;
@@ -92,7 +92,7 @@ function mouseClicked(){
         playing = false;
         lose --;
         
-        if (lose==-3){
+        if (lose==0){
           win=0
         }
         else{
@@ -108,13 +108,18 @@ function mouseClicked(){
 }
 
 function draw() {
+
+
   fill('black');
-  rect(410, 100, 200, 70);
+  rect(210, 100, 200, 70);
+  rect(500, 100, 275, 70);
   textAlign(CENTER);
   textSize(50);
   fill('white')
-  text('Score: ', width/2 , 150);
-  text(score, width/2+75 , 150)
+  text('Score: ', 310 , 150);
+  text(score, 385 , 150)
+  text('Attempts: ', 630 , 150);
+  text(lose, 750 , 150)
   //background(0);
 	for(const s of slots){
 		push();
@@ -145,7 +150,7 @@ function draw() {
       rect(width/2, height/2, 200, 70);
       fill('red');
       text('Incorrect !', width/2, height/2+10);
-    }else if(lose==-3){
+    }else if(lose==0){
       rect(width/2, height/2, 600, 600);
       fill('red');
       text('You Lose !', width/2, height/2+10);
