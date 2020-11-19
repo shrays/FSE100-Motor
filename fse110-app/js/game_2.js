@@ -7,6 +7,9 @@ let lives;
 let starXPositions, starYPositions, starList;
 let points;
 
+let button;
+let gaming = false;
+
 /*-----------------------------------------------------------------------------------------------------
 // THINGS TO ADD:
 // Turtle in background
@@ -28,10 +31,20 @@ function setup()
   starYPositions = [];
   starList = [];
   points = 0;
+
 }
 
 function draw() 
 {
+  while(gaming == false)
+  {
+    button = createButton("BOOP!");
+    button.mouseClicked(changeGaming);
+    button.size(200,100);
+    button.position(10,10);
+    button.style("font-family", "Bodoni");
+    button.style("font-size", "48px");
+  }
   paddle.setWindow(windowHeight * 0.87, windowWidth * 0.15, windowWidth * 0.03);
   updateMeteor(); //updates meteor pos
   updateStar();
@@ -129,6 +142,10 @@ function draw()
   paddle.over();
   paddle.update();
   paddle.show();
+}
+function changeGaming()
+{
+  gaming = true;
 }
 
 function updateMeteor() 
