@@ -1,0 +1,36 @@
+body { 
+    background:
+      url(../Images/spaceBackground.png) repeat;
+    background-size: cover;
+    overflow: hidden;
+  }
+
+#button5 {
+  background-image: url(../Images/backButton.png);
+  background-size: cover;
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  left: 2vw;
+  top: 2vw;
+  width: 10.152vw;
+  height: 6.03vw;
+}
+#button5:hover {
+  background-image: url(../Images/backButtonC.png);
+}
+
+#button6 {
+    background-image: url(../Images/restartButton.png);
+    background-size: cover;
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    left: 84vw;
+    top: 2vw;
+    width: 14.34vw;
+    height: 6.03vw;
+  }
+  #button6:hover {
+    background-image: url(../Images/restartButtonC.png);
+  }
