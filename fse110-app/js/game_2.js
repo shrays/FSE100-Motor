@@ -36,7 +36,7 @@ function setup()
 
 function draw() 
 {
-  while(gaming == false)
+  /*while(gaming == false)
   {
     button = createButton("BOOP!");
     button.mouseClicked(changeGaming);
@@ -44,7 +44,7 @@ function draw()
     button.position(10,10);
     button.style("font-family", "Bodoni");
     button.style("font-size", "48px");
-  }
+  }*/
   paddle.setWindow(windowHeight * 0.87, windowWidth * 0.15, windowWidth * 0.03);
   updateMeteor(); //updates meteor pos
   updateStar();
