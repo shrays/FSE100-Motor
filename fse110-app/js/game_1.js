@@ -11,8 +11,8 @@ let lastRandomX = 0;
 let lastRandomY = 0;
 
 let menu = true; //while true show instructions
-let timer = 300; 
-let attempts = 35; 
+let timer = 60; 
+let attempts = 10; 
 let subAttempt = false; //if true then subtract from total attempts
 let locationCheck = false; //if false then shape is in incorrect location / subtract from attempts
 
