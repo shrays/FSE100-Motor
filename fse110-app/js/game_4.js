@@ -2,6 +2,7 @@
 let font;
 let button;
 let col;
+let gaming = false;
 
 function preload() 
 {
@@ -36,12 +37,24 @@ function draw()
     text('Instructions', windowWidth / 2, windowHeight / 3.4);
 
     // START BUTTON
-    button = createButton("Start!");
-    col = color(16,27,31);
+    button = createButton("Start");
+    button.center(CENTER);
+    col = color(255,255,255);
+    button.size(windowWidth * 0.1,windowHeight * 0.07);
+    button.position(windowWidth * 0.5 - (windowWidth * 0.05),windowHeight * 0.7);
+    button.style("font-family", "Impact, Charcoal, sans-serif");
     button.style('background-color', col);
-    button.size(windowWidth * 0.1,windowHeight * 0.1);
-    button.position(10,10);
-    button.style("font-family", "Bodoni");
+    button.style('color', "#101b1f");
     button.style("font-size", "48px");
+    button.mousePressed(game);
+    print(gaming);
 
+    // INSTRUCTIONS
+
+    // TURTLE
+}
+
+function game()
+{
+    gaming = true;
 }

@@ -10,18 +10,15 @@ let points;
 let button;
 let gaming = false;
 
-/*-----------------------------------------------------------------------------------------------------
-// THINGS TO ADD:
-// Turtle in background
------------------------------------------------------------------------------------------------------*/
-
 function preload()
 {
   font = loadFont('Images/AmericanCaptain.ttf');
 }
+
 function setup() 
 {
   createCanvas(windowWidth, windowHeight);
+  // create paddle
   paddle = new Draggable(windowWidth/2, windowHeight * 0.87, windowWidth * 0.15, windowWidth * 0.03); // x y w h
   meteorXPositions = [];
   meteorYPositions = [];
@@ -50,7 +47,7 @@ function draw()
   updateStar();
   clear();
 
-  if(lives == 0)
+  if(lives == 0)  // Draws Endscreen when all lives are lost
   {
     for(i = 0; i < meteorList.length; i++)
     {
@@ -63,6 +60,7 @@ function draw()
     gameOver();
   }
 
+  // Draw Points and Lives Display
   textFont(font, windowWidth * 0.04);
   fill(255);
   strokeWeight(0);
@@ -79,7 +77,7 @@ function draw()
     meteorXPositions.push(Math.random() * (windowWidth - (27 * windowWidth * 0.002)));
     meteorYPositions.push(-200);
   }
-  if(frameCount % 150 == 0) //every 1 second, create new meteor with position
+  if(frameCount % 150 == 0) //every 1 second, create new star with position
   {
     starList.push(createImg("Images/Star.gif"));
     starList[starList.length-1].style("user-select", "none");
@@ -100,6 +98,7 @@ function draw()
       meteorYPositions.shift();
       i--;
     }
+    // Check if meteor collides with paddle and updates # of lives
     else if(  meteorYPositions[i] >= (paddle.getPosY() - (47 * windowWidth * 0.002) + windowWidth * 0.007) && //windowWith * 0.007 is manual correction
               meteorYPositions[i] <= (paddle.getPosY()) && //bottom of paddle
               meteorXPositions[i] >= (paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
@@ -125,6 +124,7 @@ function draw()
       starYPositions.shift();
       i--;
     }
+    // Check if star collides with paddle and updates # of points
     else if(  starYPositions[i] >= (paddle.getPosY() - (27 * windowWidth * 0.002) + windowWidth * 0.007) && //windowWith * 0.007 is manual correction
               starYPositions[i] <= (paddle.getPosY()) && //bottom of paddle
               starXPositions[i] >= (paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
@@ -139,6 +139,7 @@ function draw()
       points++;
     }
   }
+  // Checks if mouse is over / clicked / moved
   paddle.over();
   paddle.update();
   paddle.show();
@@ -148,11 +149,11 @@ function changeGaming()
   gaming = true;
 }
 
-function updateMeteor() 
+function updateMeteor() // Draws meteor falling
 {  
   for(i = 0; i < meteorYPositions.length; i++) {meteorYPositions[i] += speed;}
 }
-function updateStar()
+function updateStar() // Draws star falling
 {
   for(i = 0; i < starYPositions.length; i++) {starYPositions[i] += speed;}
 }
@@ -167,7 +168,7 @@ function mouseReleased()
   paddle.released();
 }
 
-function gameOver()
+function gameOver() //Endscreen Window
 {
   fill(0, 0, 255, 100);
   rect(0, 0, windowWidth, windowHeight);
@@ -181,7 +182,7 @@ function gameOver()
   {
     case 0:
       textFont(font, windowWidth * 0.125);  
-      text('Better luck next time', windowWidth * 0.04, windowHeight * 0.67);
+      text('Oops!', windowWidth * 0.04, windowHeight * 0.67);
       break;
     case 1:
       text('Good Job!', windowWidth * 0.04, windowHeight * 0.67);
@@ -195,10 +196,13 @@ function gameOver()
 
   }
 
-  
   fill("white");
   textFont(font, windowWidth * 0.08);
-  text('You got ' + points + ' points. Try again?', windowWidth * 0.04, windowHeight * 0.8);
+
+  (points == 1) ? 
+    text('You got ' + points + ' point. Try again?', windowWidth * 0.04, windowHeight * 0.8) : 
+    text('You got ' + points + ' points. Try again?', windowWidth * 0.04, windowHeight * 0.8);
+  
 
   //turtle = createImg("Images/mButton1.png");
   noLoop();
