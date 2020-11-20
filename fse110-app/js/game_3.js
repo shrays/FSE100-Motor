@@ -1,40 +1,41 @@
-let seq, rows, cols, slots, interval, playing, recordedSeq, currentSeqIndex, expectedRecordedSeqIndex, win, lose;
+let seq, rows, cols, slots, interval, playing, userInput, currentSeqIndex, expectedRecordedSeqIndex, win, lose;
 lose=3, score=0;
 function setup() {
 	cols = 3;
 	rows = 3;
-	len = 2;
+	len = 1;
   interval = 1000;
   playing = false;
   
-  createCanvas(1000,1000);
+  createCanvas(windowWidth,windowHeight);
   
-	let w = 600/cols ;
-	let h = 600/rows;
+	let w = 400/cols ;
+	let h = 400/rows;
 	let i = 0;
 	slots = [];
-	for(let x = 200; x < 800; x+=w){
-		for(let y = 200; y < 800; y+=h){
-			slots.push({
-				i,
-				x,
-				y,
-				w,
-				h,
-				a:false,
-        c: color(0, 0,255),
-        
-			});
+	for(let x = windowWidth/2 - 200; x < windowWidth/2  + 200; x+=w){
+		for(let y = windowHeight/2 -200; y < windowHeight/2 + 200; y+=h){
+			slots.push({i,x,y,w,h,a:false,c: color(0, 0,255),});
 			i++;
 		}
-	}
+  }
+  
+  fill('black');
+  rect(windowWidth/2-200, windowHeight/2-240, 400,60);
+  textAlign(CENTER);
+  textSize(30);
+  fill('white')
+  text('Score: ', windowWidth/2-145 , windowHeight/2-210);
+  text(score, windowWidth/2-90 , windowHeight/2-210)
+  text('Attempts: ', windowWidth/2+115 , windowHeight/2-210);
+  text(lose, windowWidth/2+185 , windowHeight/2-210)
 	createSeq(len);
 }
-
+//resets the board after each slot is called
 function resetSlots(){
   slots.forEach(s => {s.a = false;});
 }
-
+//Creates the pattern that is played
 function createSeq(len){
   playing = false;
 	seq = [];
@@ -65,7 +66,7 @@ function playSeq(){
     currentSeqIndex = 0;
   }
 }
-
+//
 function mouseClicked(){
   if(playing){
     let c = slots.find(s => {
@@ -78,7 +79,7 @@ function mouseClicked(){
     if(c){
       
     
-      //Checks if the user input is the same as the expected
+      //Checks if the user input is the same as the expected and adds a point to the users score
       if(c.i == seq[expectedRecordedSeqIndex]){
         if(expectedRecordedSeqIndex == seq.length-1){
           score++;
@@ -110,17 +111,8 @@ function mouseClicked(){
 function draw() {
 
 
-  fill('black');
-  rect(210, 100, 200, 70);
-  rect(500, 100, 275, 70);
-  textAlign(CENTER);
-  textSize(50);
-  fill('white')
-  text('Score: ', 310 , 150);
-  text(score, 385 , 150)
-  text('Attempts: ', 630 , 150);
-  text(lose, 750 , 150)
-  //background(0);
+  
+  
 	for(const s of slots){
 		push();
 		fill((s.a ? s.c : 0));
