@@ -1,6 +1,5 @@
 //remaining features required
 //starting screen that informs player what to expect -- starts once clicking ok
-//reset for replayability
 
 //---use this to later assign different window width/height placement
 // Get a random element from an array using the random(Array) syntax
@@ -8,15 +7,12 @@
 //let word = random(words); // select random word
 //text(word, 10, 50); // draw the word
 
-//let xPositions = [windowWidth/1.3,windowWidth/1.5, windowWidth/1.2];
-//var yPositions = [];
-//var index = 0;
 let lastRandomX = 0; 
 let lastRandomY = 0;
 
 let menu = true; //while true show instructions
-let timer = 300; 
-let attempts = 35; 
+let timer = 60; 
+let attempts = 10; 
 let subAttempt = false; //if true then subtract from total attempts
 let locationCheck = false; //if false then shape is in incorrect location / subtract from attempts
 
@@ -48,30 +44,29 @@ function setup() {
     //yPositions.push( random(400) );
   ////}
 
-  shape1 = new Draggable(getNonRepeatRandomShapeXPos(),getNonRepeatRandomShapeYPos(),windowWidth/12,windowHeight/21.6);
+  shape1 = new Draggable(getNonRepeatRandomShapeXPos() + 200,getNonRepeatRandomShapeYPos() + 50,windowWidth/12,windowHeight/21.6);
 
-  shape2 = new Draggable(getNonRepeatRandomShapeXPos(),getNonRepeatRandomShapeYPos(),windowWidth/64,windowHeight/13.5);
+  shape2 = new Draggable(getNonRepeatRandomShapeXPos() + 100,getNonRepeatRandomShapeYPos() + 100,windowWidth/64,windowHeight/13.5);
 
-  shape3 = new Draggable(getNonRepeatRandomShapeXPos(),getNonRepeatRandomShapeYPos(),windowWidth/36,windowHeight/13.5);
+  shape3 = new Draggable(getNonRepeatRandomShapeXPos() + 25,getNonRepeatRandomShapeYPos() + 280,windowWidth/36,windowHeight/13.5);
 
-  shape4 = new Draggable(getNonRepeatRandomShapeXPos(),getNonRepeatRandomShapeYPos(),windowWidth/38.4,windowHeight/21.6);
+  shape4 = new Draggable(getNonRepeatRandomShapeXPos() + 175,getNonRepeatRandomShapeYPos() + 325,windowWidth/38.4,windowHeight/21.6);
 
-  shape5 = new DraggableS(getNonRepeatRandomShapeXPos(), getNonRepeatRandomShapeYPos(), 20);
+  shape5 = new DraggableS(getNonRepeatRandomShapeXPos() + 175, getNonRepeatRandomShapeYPos() + 450, 20);
 
-  shape6 = new DraggableS(getNonRepeatRandomShapeXPos(), getNonRepeatRandomShapeYPos(), 35);
+  shape6 = new DraggableS(getNonRepeatRandomShapeXPos() + 275, getNonRepeatRandomShapeYPos() + 550, 35);
   
-  testShape1 = new AnswerRectangle(getNonRepeatRandomShapeXPos() + 620,getNonRepeatRandomShapeYPos() + 120,windowWidth/12,windowHeight/21.6);
+  testShape1 = new AnswerRectangle(getNonRepeatRandomShapeXPos() + 920,getNonRepeatRandomShapeYPos(),windowWidth/12,windowHeight/21.6);
 
-  testShape2 = new AnswerRectangle(getNonRepeatRandomShapeXPos() + 700,getNonRepeatRandomShapeYPos() + 160,windowWidth/64,windowHeight/13.5);
+  testShape2 = new AnswerRectangle(getNonRepeatRandomShapeXPos() + 800,getNonRepeatRandomShapeYPos() + 150,windowWidth/64,windowHeight/13.5);
 
-  testShape3 = new AnswerRectangle(getNonRepeatRandomShapeXPos() + 750,getNonRepeatRandomShapeYPos() + 240,windowWidth/36,windowHeight/13.5);
+  testShape3 = new AnswerRectangle(getNonRepeatRandomShapeXPos() + 1050,getNonRepeatRandomShapeYPos() + 250,windowWidth/36,windowHeight/13.5);
 
-  testShape4 = new AnswerRectangle(getNonRepeatRandomShapeXPos() + 650,getNonRepeatRandomShapeYPos() + 290,windowWidth/38.4,windowHeight/21.6);
+  testShape4 = new AnswerRectangle(getNonRepeatRandomShapeXPos() + 1150,getNonRepeatRandomShapeYPos() + 350,windowWidth/38.4,windowHeight/21.6);
 
-  
-  testShape5 = new AnswerCircle(getNonRepeatRandomShapeXPos() + 725,getNonRepeatRandomShapeYPos() + 400,20); 
+  testShape5 = new AnswerCircle(getNonRepeatRandomShapeXPos() + 1250,getNonRepeatRandomShapeYPos() + 450,20); 
 
-  testShape6 = new AnswerCircle(getNonRepeatRandomShapeXPos() + 770,getNonRepeatRandomShapeYPos() + 330,35); 
+  testShape6 = new AnswerCircle(getNonRepeatRandomShapeXPos() + 1320,getNonRepeatRandomShapeYPos() + 550,35); 
  
 }
 
@@ -120,21 +115,17 @@ function draw() {
     shape1.correctPosition(); //color the shape green
   }
 
-
   if(shape2.intersects(testShape2) && shape2.releasedCheck(false)){
     shape2.correctPosition();
   } 
-  
 
   if(shape3.intersects(testShape3) && shape3.releasedCheck(false)){
     shape3.correctPosition();
   }
- 
 
   if(shape4.intersects(testShape4) && shape4.releasedCheck(false)){
     shape4.correctPosition();
   }
-  
 
   if(shape5.intersects(testShape5) && shape5.releasedCheck(false)){
     shape5.correctPosition();
@@ -194,7 +185,7 @@ function getNonRepeatRandomShapeXPos(){
 //let words = ['apple', 'bear', 'cat', 'dog'];
 //let word = random(words); // select random word
 //text(word, 10, 50); // draw the word
-let xPositions =[windowWidth/8,windowWidth/9, windowWidth/5,windowWidth/6, windowWidth/4, windowWidth/7 ]; //[windowWidth/1.3,windowWidth/1.5, windowWidth/1.2, windowWidth/1.1];
+let xPositions =[windowWidth/4,windowWidth/5, windowWidth/6,windowWidth/7, windowWidth/8, windowWidth/9 ]; //[windowWidth/1.3,windowWidth/1.5, windowWidth/1.2, windowWidth/1.1];
 while(true){
 let selectXpos = random(xPositions);
 if(selectXpos == lastRandomX){
@@ -226,7 +217,6 @@ else{
 }}
 
 
-
 function mousePressed() {
   shape1.pressed();
   shape2.pressed();
@@ -256,7 +246,6 @@ class AnswerRectangle{ //creates invisible shape under template locations for ch
   }
 
   show() { 
-   
     fill("white");
     rect(this.x, this.y, this.w, this.h);
     }
@@ -394,12 +383,6 @@ class Draggable {
             attempts = attempts - 1;
             } 
           }
-    //let r = dist(shape1.x,testShape2.y, testShape1.x,testShape1.y);
-    //if( r > (shape1.w/5 + testShape1.w/5)){
-      //if(attempts > 0){
-     //attempts = attempts - 1;
-      //} 
-    //}
     this.subAttempt = false;
   }
  
