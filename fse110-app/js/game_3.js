@@ -1,14 +1,36 @@
 let seq, rows, cols, slots, interval, playing, userInput, currentSeqIndex, expectedRecordedSeqIndex, win, lose;
 lose=3, score=0;
+let instructions, gaming;
+let board;
 function setup() {
 	cols = 3;
 	rows = 3;
 	len = 1;
   interval = 1000;
-  playing = false;
   
+  
+  let check=true;
   createCanvas(windowWidth,windowHeight);
   
+  instructions = loadImage("Images/MemoryInstructions.png");
+  button = createButton("Start!");
+  button.mousePressed(() => 
+    {
+      playing = false;
+      button.hide();
+      gaming = true;
+      imageMode(CORNER);
+      playSeq();
+      
+    }); 
+  button.center(CENTER);
+  col = color(255,255,255);
+  button.style("font-family", "Impact, Charcoal, sans-serif");
+  button.style('background-color', col);
+  button.style('color', "#101b1f");
+  button.style("font-size", "60px");
+  
+  //creates the canvas with the 3x3 square and sets up each as a button
 	let w = 400/cols ;
 	let h = 400/rows;
 	let i = 0;
@@ -19,7 +41,7 @@ function setup() {
 			i++;
 		}
   }
-  
+  //displays score and lives left at the top of board
   fill('black');
   rect(windowWidth/2-200, windowHeight/2-240, 400,60);
   textAlign(CENTER);
@@ -29,7 +51,7 @@ function setup() {
   text(score, windowWidth/2-90 , windowHeight/2-210)
   text('Attempts: ', windowWidth/2+115 , windowHeight/2-210);
   text(lose, windowWidth/2+185 , windowHeight/2-210)
-	createSeq(len);
+  createSeq(len);
 }
 //resets the board after each slot is called
 function resetSlots(){
@@ -39,7 +61,7 @@ function resetSlots(){
 function createSeq(len){
   playing = false;
 	seq = [];
-  recordedSeq = [];
+  userInput = [];
   currentSeqIndex = 0;
   expectedRecordedSeqIndex = 0;
 	for(let i = 0; i < len; i++){
@@ -48,7 +70,7 @@ function createSeq(len){
   playSeq();
   
 }
-
+// Plays the pattern the user has to copy
 function playSeq(){
   win = 0;
   // Reset all slots
@@ -66,7 +88,7 @@ function playSeq(){
     currentSeqIndex = 0;
   }
 }
-//
+//Finds which button the mouse is over and when clicked shows which one
 function mouseClicked(){
   if(playing){
     let c = slots.find(s => {
@@ -92,7 +114,6 @@ function mouseClicked(){
         //If its wrong gives 1 "strike" 3 strikes and you lose
         playing = false;
         lose --;
-        
         if (lose==0){
           win=0
         }
@@ -110,9 +131,23 @@ function mouseClicked(){
 
 function draw() {
 
-
-  
-  
+  if(!gaming)
+  {
+    clear();
+    button.size(windowWidth * 0.15,windowHeight * 0.09);
+    button.position(windowWidth * 0.53,windowHeight * 0.65);
+    imageMode(CENTER);
+    instructions.resize(16 * windowWidth * 0.06, 9 * windowWidth * 0.06)
+    image(instructions, windowWidth / 2, windowHeight / 2);
+  }
+  if(gaming)
+  {
+    
+    clear();
+    
+	
+    
+    //Causes the buttons to change colors
 	for(const s of slots){
 		push();
 		fill((s.a ? s.c : 0));
@@ -125,6 +160,7 @@ function draw() {
       
 
     }
+    //on certain conditions it will display different messages ex. If you get the sequence correct it displays correct
 		pop();
     push();
     textAlign(CENTER);
@@ -157,4 +193,7 @@ function draw() {
     }
     pop();
 	}
+  }
+  
+  
 }
