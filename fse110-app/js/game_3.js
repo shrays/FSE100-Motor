@@ -41,16 +41,7 @@ function setup() {
 			i++;
 		}
   }
-  //displays score and lives left at the top of board
-  fill('black');
-  rect(windowWidth/2-200, windowHeight/2-240, 400,60);
-  textAlign(CENTER);
-  textSize(30);
-  fill('white')
-  text('Score: ', windowWidth/2-145 , windowHeight/2-210);
-  text(score, windowWidth/2-90 , windowHeight/2-210)
-  text('Attempts: ', windowWidth/2+115 , windowHeight/2-210);
-  text(lose, windowWidth/2+185 , windowHeight/2-210)
+
   createSeq(len);
 }
 //resets the board after each slot is called
@@ -144,7 +135,16 @@ function draw() {
   {
     
     clear();
-    
+      //displays score and lives left at the top of board
+  fill('black');
+  rect(windowWidth/2-200, windowHeight/2-240, 400,60);
+  textAlign(CENTER);
+  textSize(30);
+  fill('white')
+  text('Score: ', windowWidth/2-145 , windowHeight/2-210);
+  text(score, windowWidth/2-90 , windowHeight/2-210)
+  text('Attempts: ', windowWidth/2+115 , windowHeight/2-210);
+  text(lose, windowWidth/2+185 , windowHeight/2-210)
 	
     
     //Causes the buttons to change colors
