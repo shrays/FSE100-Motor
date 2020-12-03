@@ -1,4 +1,4 @@
-let paddle, turtle;
+let paddle, turtle, instructions;
 let font;
 let speed = 5;
 
@@ -7,134 +7,170 @@ let lives;
 let starXPositions, starYPositions, starList;
 let points;
 
-/*-----------------------------------------------------------------------------------------------------
-// THINGS TO ADD:
-// Turtle in background
------------------------------------------------------------------------------------------------------*/
+let button;
+let gaming = false;
 
 function preload()
 {
   font = loadFont('Images/AmericanCaptain.ttf');
 }
+
 function setup() 
 {
   createCanvas(windowWidth, windowHeight);
+  // create paddle
   paddle = new Draggable(windowWidth/2, windowHeight * 0.87, windowWidth * 0.15, windowWidth * 0.03); // x y w h
   meteorXPositions = [];
   meteorYPositions = [];
   meteorList = [];
-  lives = 1;
+  lives = 5;
   starXPositions = [];
   starYPositions = [];
   starList = [];
   points = 0;
+
+  instructions = loadImage("Images/MeteorInstructions.png");
+  button = createButton("Start!");
+  button.mousePressed(() => 
+    {
+      button.hide();
+      gaming = true;
+      imageMode(CORNER);
+    }); 
+  button.center(CENTER);
+  col = color(255,255,255);
+  button.style("font-family", "Impact, Charcoal, sans-serif");
+  button.style('background-color', col);
+  button.style('color', "#101b1f");
+  button.style("font-size", "60px");
 }
 
 function draw() 
 {
-  paddle.setWindow(windowHeight * 0.87, windowWidth * 0.15, windowWidth * 0.03);
-  updateMeteor(); //updates meteor pos
-  updateStar();
-  clear();
+  if(!gaming)
+  {
+    clear();
+    button.size(windowWidth * 0.15,windowHeight * 0.09);
+    button.position(windowWidth * 0.53,windowHeight * 0.65);
+    imageMode(CENTER);
+    instructions.resize(16 * windowWidth * 0.06, 9 * windowWidth * 0.06)
+    image(instructions, windowWidth / 2, windowHeight / 2);
+  }
+  if(gaming)
+  {
+    clear();
+    paddle.setWindow(windowHeight * 0.87, windowWidth * 0.15, windowWidth * 0.03);
+    updateMeteor(); //updates meteor pos
+    updateStar();
 
-  if(lives == 0)
-  {
-    for(i = 0; i < meteorList.length; i++)
+    if(lives == 0)  // Draws Endscreen when all lives are lost
     {
-      meteorList[i].remove();
+      for(i = 0; i < meteorList.length; i++)
+      {
+        meteorList[i].remove();
+      }
+      for(i = 0; i < starList.length; i++)
+      {
+        starList[i].remove();
+      }
+      gameOver();
     }
-    for(i = 0; i < starList.length; i++)
-    {
-      starList[i].remove();
-    }
-    gameOver();
-  }
 
-  textFont(font, windowWidth * 0.04);
-  fill(255);
-  text('Points: ' + points, windowWidth * 0.35, windowHeight * 0.1);
-  text('Lives: ' + lives, windowWidth * 0.55, windowHeight * 0.1);
+    // Draw Points and Lives Display
+    textFont(font, windowWidth * 0.04);
+    fill(255);
+    strokeWeight(0);
+    text('Points: ' + points, windowWidth * 0.35, windowHeight * 0.1);
+    text('Lives: ' + lives, windowWidth * 0.55, windowHeight * 0.1);
 
-  if(frameCount % 60 == 0) //every 1 second, create new meteor with position
-  {
-    meteorList.push(createImg("Images/Meteor.gif"));
-    meteorList[meteorList.length-1].style("user-select", "none");
-    meteorList[meteorList.length-1].attribute("draggable", "false");
-    meteorList[meteorList.length-1].attribute('height', 47 * windowWidth * 0.002);
-    meteorList[meteorList.length-1].attribute('width', 27 * windowWidth * 0.002);
-    meteorXPositions.push(Math.random() * (windowWidth - (27 * windowWidth * 0.002)));
-    meteorYPositions.push(-200);
-  }
-  if(frameCount % 150 == 0) //every 1 second, create new meteor with position
-  {
-    starList.push(createImg("Images/Star.gif"));
-    starList[starList.length-1].style("user-select", "none");
-    starList[starList.length-1].attribute("draggable", "false");
-    starList[starList.length-1].attribute('height', 27 * windowWidth * 0.002);
-    starList[starList.length-1].attribute('width', 27 * windowWidth * 0.002);
-    starXPositions.push(Math.random() * (windowWidth - (27 * windowWidth * 0.002)));
-    starYPositions.push(-200);
-  }
-  for(i = 0; i < meteorXPositions.length; i++) //Cycles through every objects positions
-  {
-    meteorList[i].position(meteorXPositions[i], meteorYPositions[i]);  //Sets image positions
-    if(meteorYPositions[i] > 0.9 * (windowHeight + (47 * windowWidth * 0.002))) //Removes meteors when off screen
+    if(frameCount % 60 == 0) //every 1 second, create new meteor with position
     {
-      meteorList[0].remove();
-      meteorList.shift();
-      meteorXPositions.shift();
-      meteorYPositions.shift();
-      i--;
+      meteorList.push(createImg("Images/Meteor.gif"));
+      meteorList[meteorList.length-1].style("user-select", "none");
+      meteorList[meteorList.length-1].attribute("draggable", "false");
+      meteorList[meteorList.length-1].attribute('height', 47 * windowWidth * 0.002);
+      meteorList[meteorList.length-1].attribute('width', 27 * windowWidth * 0.002);
+      meteorXPositions.push(Math.random() * (windowWidth - (27 * windowWidth * 0.002)));
+      meteorYPositions.push(-200);
     }
-    else if(  meteorYPositions[i] >= (paddle.getPosY() - (47 * windowWidth * 0.002) + windowWidth * 0.007) && //windowWith * 0.007 is manual correction
-              meteorYPositions[i] <= (paddle.getPosY()) && //bottom of paddle
-              meteorXPositions[i] >= (paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
-              meteorXPositions[i] <= (paddle.getPosX() + windowWidth * 0.15) )
+    if(frameCount % 150 == 0) //every 1 second, create new star with position
     {
-      //Collision happens, remove meteorList/shift, give/remove points
-      meteorList[0].remove();
-      meteorList.shift();
-      meteorXPositions.shift();
-      meteorYPositions.shift();
-      i--;
-      lives--;
+      starList.push(createImg("Images/Star.gif"));
+      starList[starList.length-1].style("user-select", "none");
+      starList[starList.length-1].attribute("draggable", "false");
+      starList[starList.length-1].attribute('height', 27 * windowWidth * 0.002);
+      starList[starList.length-1].attribute('width', 27 * windowWidth * 0.002);
+      starXPositions.push(Math.random() * (windowWidth - (27 * windowWidth * 0.002)));
+      starYPositions.push(-200);
     }
+    for(i = 0; i < meteorXPositions.length; i++) //Cycles through every objects positions
+    {
+      meteorList[i].position(meteorXPositions[i], meteorYPositions[i]);  //Sets image positions
+      if(meteorYPositions[i] > 0.9 * (windowHeight + (47 * windowWidth * 0.002))) //Removes meteors when off screen
+      {
+        meteorList[0].remove();
+        meteorList.shift();
+        meteorXPositions.shift();
+        meteorYPositions.shift();
+        i--;
+      }
+      // Check if meteor collides with paddle and updates # of lives
+      else if(  meteorYPositions[i] >= (paddle.getPosY() - (47 * windowWidth * 0.002) + windowWidth * 0.007) && //windowWith * 0.007 is manual correction
+                meteorYPositions[i] <= (paddle.getPosY()) && //bottom of paddle
+                meteorXPositions[i] >= (paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
+                meteorXPositions[i] <= (paddle.getPosX() + windowWidth * 0.15) )
+      {
+        //Collision happens, remove meteorList/shift, give/remove points
+        meteorList[0].remove();
+        meteorList.shift();
+        meteorXPositions.shift();
+        meteorYPositions.shift();
+        i--;
+        lives--;
+      }
+    }
+    for(i = 0; i < starXPositions.length; i++) //Cycles through every objects positions
+    {
+      starList[i].position(starXPositions[i], starYPositions[i]);  //Sets image positions
+      if(starYPositions[i] > 0.9 * (windowHeight + (27 * windowWidth * 0.002))) //Removes meteors when off screen
+      {
+        starList[0].remove();
+        starList.shift();
+        starXPositions.shift();
+        starYPositions.shift();
+        i--;
+      }
+      // Check if star collides with paddle and updates # of points
+      else if(  starYPositions[i] >= (paddle.getPosY() - (27 * windowWidth * 0.002) + windowWidth * 0.007) && //windowWith * 0.007 is manual correction
+                starYPositions[i] <= (paddle.getPosY()) && //bottom of paddle
+                starXPositions[i] >= (paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
+                starXPositions[i] <= (paddle.getPosX() + windowWidth * 0.15) )
+      {
+        //Collision happens, remove meteorList/shift, give/remove points
+        starList[0].remove();
+        starList.shift();
+        starXPositions.shift();
+        starYPositions.shift();
+        i--;
+        points++;
+      }
+    }
+    // Checks if mouse is over / clicked / moved
+    paddle.over();
+    paddle.update();
+    paddle.show();
   }
-  for(i = 0; i < starXPositions.length; i++) //Cycles through every objects positions
-  {
-    starList[i].position(starXPositions[i], starYPositions[i]);  //Sets image positions
-    if(starYPositions[i] > 0.9 * (windowHeight + (27 * windowWidth * 0.002))) //Removes meteors when off screen
-    {
-      starList[0].remove();
-      starList.shift();
-      starXPositions.shift();
-      starYPositions.shift();
-      i--;
-    }
-    else if(  starYPositions[i] >= (paddle.getPosY() - (27 * windowWidth * 0.002) + windowWidth * 0.007) && //windowWith * 0.007 is manual correction
-              starYPositions[i] <= (paddle.getPosY()) && //bottom of paddle
-              starXPositions[i] >= (paddle.getPosX() - windowWidth * 0.04) && //windowWidth * 0.04 is manual correction number
-              starXPositions[i] <= (paddle.getPosX() + windowWidth * 0.15) )
-    {
-      //Collision happens, remove meteorList/shift, give/remove points
-      starList[0].remove();
-      starList.shift();
-      starXPositions.shift();
-      starYPositions.shift();
-      i--;
-      points++;
-    }
-  }
-  paddle.over();
-  paddle.update();
-  paddle.show();
+}
+function changeGaming()
+{
+  menu = 1;
 }
 
-function updateMeteor() 
+function updateMeteor() // Draws meteor falling
 {  
   for(i = 0; i < meteorYPositions.length; i++) {meteorYPositions[i] += speed;}
 }
-function updateStar()
+function updateStar() // Draws star falling
 {
   for(i = 0; i < starYPositions.length; i++) {starYPositions[i] += speed;}
 }
@@ -149,18 +185,41 @@ function mouseReleased()
   paddle.released();
 }
 
-function gameOver()
+function gameOver() //Endscreen Window
 {
-  fill(255, 0, 0, 150);
+  fill(0, 0, 255, 100);
   rect(0, 0, windowWidth, windowHeight);
   
   fill("white");
-  textFont(font, windowWidth * 0.25);
-  text('Game Over!', windowWidth * 0.02, windowHeight * 0.67);
-  
+  //stroke(0,0,0);
+  //strokeWeight(8);
+  textFont(font, windowWidth * 0.2);
+
+  switch(Math.floor(points / 5))
+  {
+    case 0:
+      textFont(font, windowWidth * 0.125);  
+      text('Oops!', windowWidth * 0.04, windowHeight * 0.67);
+      break;
+    case 1:
+      text('Good Job!', windowWidth * 0.04, windowHeight * 0.67);
+      break;
+    case 2:
+      text('Wow!', windowWidth * 0.04, windowHeight * 0.67);
+      break;
+    default:
+      text('Amazing!', windowWidth * 0.04, windowHeight * 0.67);
+      break;
+
+  }
+
   fill("white");
   textFont(font, windowWidth * 0.08);
-  text('You scored ' + points + ' points', windowWidth * 0.04, windowHeight * 0.8);
+
+  (points == 1) ? 
+    text('You got ' + points + ' point. Try again?', windowWidth * 0.04, windowHeight * 0.8) : 
+    text('You got ' + points + ' points. Try again?', windowWidth * 0.04, windowHeight * 0.8);
+  
 
   //turtle = createImg("Images/mButton1.png");
   noLoop();

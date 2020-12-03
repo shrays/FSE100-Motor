@@ -1,44 +1,58 @@
-let seq, rows, cols, slots, interval, playing, recordedSeq, currentSeqIndex, expectedRecordedSeqIndex, win, lose;
-lose=0, score=0;
+let seq, rows, cols, slots, interval, playing, userInput, currentSeqIndex, expectedRecordedSeqIndex, win, lose;
+lose=3, score=0;
+let instructions, gaming;
+let board;
 function setup() {
 	cols = 3;
 	rows = 3;
-	len = 2;
+	len = 1;
   interval = 1000;
-  playing = false;
   
-  createCanvas(1000,1000);
   
-	let w = 600/cols ;
-	let h = 600/rows;
+  let check=true;
+  createCanvas(windowWidth,windowHeight);
+  
+  instructions = loadImage("Images/MemoryInstructions.png");
+  button = createButton("Start!");
+  button.mousePressed(() => 
+    {
+      playing = false;
+      button.hide();
+      gaming = true;
+      imageMode(CORNER);
+      playSeq();
+      
+    }); 
+  button.center(CENTER);
+  col = color(255,255,255);
+  button.style("font-family", "Impact, Charcoal, sans-serif");
+  button.style('background-color', col);
+  button.style('color', "#101b1f");
+  button.style("font-size", "60px");
+  
+  //creates the canvas with the 3x3 square and sets up each as a button
+	let w = 400/cols ;
+	let h = 400/rows;
 	let i = 0;
 	slots = [];
-	for(let x = 200; x < 800; x+=w){
-		for(let y = 200; y < 800; y+=h){
-			slots.push({
-				i,
-				x,
-				y,
-				w,
-				h,
-				a:false,
-        c: color(0, 0,255),
-        
-			});
+	for(let x = windowWidth/2 - 200; x < windowWidth/2  + 200; x+=w){
+		for(let y = windowHeight/2 -200; y < windowHeight/2 + 200; y+=h){
+			slots.push({i,x,y,w,h,a:false,c: color(0, 0,255),});
 			i++;
 		}
-	}
-	createSeq(len);
-}
+  }
 
+  createSeq(len);
+}
+//resets the board after each slot is called
 function resetSlots(){
   slots.forEach(s => {s.a = false;});
 }
-
+//Creates the pattern that is played
 function createSeq(len){
   playing = false;
 	seq = [];
-  recordedSeq = [];
+  userInput = [];
   currentSeqIndex = 0;
   expectedRecordedSeqIndex = 0;
 	for(let i = 0; i < len; i++){
@@ -47,7 +61,7 @@ function createSeq(len){
   playSeq();
   
 }
-
+// Plays the pattern the user has to copy
 function playSeq(){
   win = 0;
   // Reset all slots
@@ -65,7 +79,7 @@ function playSeq(){
     currentSeqIndex = 0;
   }
 }
-
+//Finds which button the mouse is over and when clicked shows which one
 function mouseClicked(){
   if(playing){
     let c = slots.find(s => {
@@ -78,7 +92,7 @@ function mouseClicked(){
     if(c){
       
     
-      //Checks if the user input is the same as the expected
+      //Checks if the user input is the same as the expected and adds a point to the users score
       if(c.i == seq[expectedRecordedSeqIndex]){
         if(expectedRecordedSeqIndex == seq.length-1){
           score++;
@@ -91,8 +105,7 @@ function mouseClicked(){
         //If its wrong gives 1 "strike" 3 strikes and you lose
         playing = false;
         lose --;
-        
-        if (lose==-3){
+        if (lose==0){
           win=0
         }
         else{
@@ -108,14 +121,33 @@ function mouseClicked(){
 }
 
 function draw() {
+
+  if(!gaming)
+  {
+    clear();
+    button.size(windowWidth * 0.15,windowHeight * 0.09);
+    button.position(windowWidth * 0.53,windowHeight * 0.65);
+    imageMode(CENTER);
+    instructions.resize(16 * windowWidth * 0.06, 9 * windowWidth * 0.06)
+    image(instructions, windowWidth / 2, windowHeight / 2);
+  }
+  if(gaming)
+  {
+    
+    clear();
+      //displays score and lives left at the top of board
   fill('black');
-  rect(410, 100, 200, 70);
+  rect(windowWidth/2-200, windowHeight/2-240, 400,60);
   textAlign(CENTER);
-  textSize(50);
+  textSize(30);
   fill('white')
-  text('Score: ', width/2 , 150);
-  text(score, width/2+75 , 150)
-  //background(0);
+  text('Score: ', windowWidth/2-145 , windowHeight/2-210);
+  text(score, windowWidth/2-90 , windowHeight/2-210)
+  text('Attempts: ', windowWidth/2+115 , windowHeight/2-210);
+  text(lose, windowWidth/2+185 , windowHeight/2-210)
+	
+    
+    //Causes the buttons to change colors
 	for(const s of slots){
 		push();
 		fill((s.a ? s.c : 0));
@@ -128,6 +160,7 @@ function draw() {
       
 
     }
+    //on certain conditions it will display different messages ex. If you get the sequence correct it displays correct
 		pop();
     push();
     textAlign(CENTER);
@@ -145,7 +178,7 @@ function draw() {
       rect(width/2, height/2, 200, 70);
       fill('red');
       text('Incorrect !', width/2, height/2+10);
-    }else if(lose==-3){
+    }else if(lose==0){
       rect(width/2, height/2, 600, 600);
       fill('red');
       text('You Lose !', width/2, height/2+10);
@@ -160,4 +193,7 @@ function draw() {
     }
     pop();
 	}
+  }
+  
+  
 }

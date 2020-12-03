@@ -1,13 +1,15 @@
-//remaining features required
-//starting screen that informs player what to expect -- starts once clicking ok
-//back button -- (exit to main menu)
-//reset for replayability
-//extra fake shapes on the right side
-//incorrect attempts tracker -- if 3 shapes are matched incorrectly game resets
+//assign these to 0 so that they can be assigned the first randomly assigned value
+let lastRandomX = 0; 
+let lastRandomY = 0;
 
-let timer = 10; 
-let attempts = 3;
-let locationCheck = false; //if false then shape is in incorrect location
+let instructions; //used to load image of instructions
+let gaming = false; //if false display instruction menu
+
+let timer = 40; 
+let displayTimer = false; //if true then display the time in which player completed game
+let attempts = 0; 
+let subAttempt = false; //if true then subtract from total attempts
+let locationCheck = false; //if false then shape is not placed correctly / subtract from attempts
 
 //Variables for draggable shapes
 let shape1;
@@ -16,6 +18,7 @@ let shape3;
 let shape4;
 let shape5;
 let shape6;
+
 //Variables for testing correct draggable shape position 
 let testShape1;
 let testShape2;
@@ -24,80 +27,95 @@ let testShape4;
 let testShape5;
 let testShape6;
 
-function setup() {
-  createCanvas(1280,720);
-
-  shape1 = new Draggable(240, 30, 120, 50);
-  //shape1 = new Draggable(40, 30, 120, 50); //oldsetup
-  shape2 = new Draggable(350, 120, 30, 80);
-  //shape2 = new Draggable(150, 90, 30, 80);
-  shape3 = new Draggable(240, 230, 30, 50);
-  //shape3 = new Draggable(40, 130, 30, 50);
-  shape4 = new Draggable(390, 260, 50, 50);
-  //shape4 = new Draggable(90, 160, 50, 50);
-  shape5 = new DraggableS(440,370, 20);
-  //shape5 = new DraggableS(40,270, 20);
-  shape6 = new DraggableS(270,370,35);
-  //shape6 = new DraggableS(170,270,35);
-
-  //answers to shape 1-6 (invisible shapes under templates on right side)
-  testShape1 = new AnswerRectangle(940, 300, 120, 50);
-  //testShape1 = new AnswerRectangle(440, 300, 120, 50); //old setup
-  testShape2 = new AnswerRectangle(1140, 300, 30, 80);
-  //testShape2 = new AnswerRectangle(640, 300, 30, 80);
-  testShape3 = new AnswerRectangle(740, 150, 30, 50);
-  //testShape3 = new AnswerRectangle(640, 150, 30, 50);
-  testShape4 = new AnswerRectangle(840, 200, 50, 50);
-  //testShape4 = new AnswerRectangle(540, 200, 50, 50);                 
-  testShape5 = new AnswerCircle(740,270,3); 
-  //testShape5 = new AnswerCircle(440,270,3); 
-  testShape6= new AnswerCircle(1140,170,3);
-  //testShape6= new AnswerCircle(440,170,3);
+function preload()
+{
+  font = loadFont('Images/AmericanCaptain.ttf'); //preloads font used throughout each game
 }
 
+function setup() {
+  createCanvas(windowWidth, windowHeight); //creates a canvas that scales to window width and height
+  
+  //Creating Display for the instructions page when the user enters a game
+  instructions = loadImage('Images/MatchingInstructions.png');
+  loadImage("Images/MatchingInstructions.png");
+  button = createButton("Start!");
+  button.mousePressed(() => 
+    {
+      button.hide();
+      gaming = true;
+      imageMode(CORNER);
+    }); 
+  button.center(CENTER);
+  col = color(255,255,255);
+  button.style("font-family", "Impact, Charcoal, sans-serif");
+  button.style('background-color', col);
+  button.style('color', "#101b1f");
+  button.style("font-size", "60px");
+
+  //  Assigning the Draggable shapes an x, y, positions and width and height that scales with window width and height
+  //  The getNonRepeatRandomShapeXPos and YPos are called for x, y in order to have them randomly appear on screen each time the game starts
+  shape1  = new Draggable(getNonRepeatRandomShapeXPos() + 200,getNonRepeatRandomShapeYPos() + 50,windowWidth/12,windowHeight/21.6);
+
+  shape2 = new Draggable(getNonRepeatRandomShapeXPos() + 100,getNonRepeatRandomShapeYPos() + 100,windowWidth/64,windowHeight/13.5);
+
+  shape3 = new Draggable(getNonRepeatRandomShapeXPos() + 25,getNonRepeatRandomShapeYPos() + 280,windowWidth/36,windowHeight/13.5);
+
+  shape4 = new Draggable(getNonRepeatRandomShapeXPos() + 175,getNonRepeatRandomShapeYPos() + 325,windowWidth/38.4,windowHeight/21.6);
+
+  shape5 = new DraggableS(getNonRepeatRandomShapeXPos() + 175, getNonRepeatRandomShapeYPos() + 450, 20);
+
+  shape6 = new DraggableS(getNonRepeatRandomShapeXPos() + 275, getNonRepeatRandomShapeYPos() + 550, 35);
+  
+  testShape1 = new AnswerRectangle(getNonRepeatRandomShapeXPos() +  (920 * .9),getNonRepeatRandomShapeYPos(),windowWidth/12,windowHeight/21.6);
+
+  testShape2 = new AnswerRectangle(getNonRepeatRandomShapeXPos() + (870 * .9),getNonRepeatRandomShapeYPos() + 150,windowWidth/64,windowHeight/13.5);
+
+  testShape3 = new AnswerRectangle(getNonRepeatRandomShapeXPos() + (1050 * .9),getNonRepeatRandomShapeYPos() + 250,windowWidth/36,windowHeight/13.5);
+
+  testShape4 = new AnswerRectangle(getNonRepeatRandomShapeXPos() + (1150 * .9),getNonRepeatRandomShapeYPos() + 350,windowWidth/38.4,windowHeight/21.6);
+
+  testShape5 = new AnswerCircle(getNonRepeatRandomShapeXPos() + (1250 * .9),getNonRepeatRandomShapeYPos() + 450,20); 
+
+  testShape6 = new AnswerCircle(getNonRepeatRandomShapeXPos() + (1320 * .9),getNonRepeatRandomShapeYPos() + 550,35); 
+ 
+} //end setup
+
 function draw() {
-  clear(); // removes trailing of drawn draggable shapes
+  
+    //if gaming is false then display the instructions page with a start button
+    if(!gaming) 
+    {
+    clear();
+    button.size(windowWidth * 0.15,windowHeight * 0.09);
+    button.position(windowWidth * 0.53,windowHeight * 0.65);
+    imageMode(CENTER);
+    instructions.resize(16 * windowWidth * 0.06, 9 * windowWidth * 0.06);
+    image(instructions, windowWidth / 2, windowHeight / 2);
+    }
 
-  /////////////GUI LAYOUT/////////////////
-  //border
+    if(gaming) //the user has clicked the start button so gaming is now true and the rest of the code can run for the game
+    {
+      clear(); //clear to avoid the previous locations of draggable shapes appearing all over the screen
+
+  //created a rectangle that scales to screen size and divides the draggable shapes from the templates
+  stroke(color(0, 0, 255));
+  strokeWeight(2);
   fill("black");
-  rect(640,0,30,720);
+  rect(windowWidth/2, 0, 30, windowHeight);
   
-  //shape1 answer
-  fill("white");
-  rect(940, 300, 120, 50);
-  //rect(440,300,120,50); //old answers
-  
-  //shape2 answer
-  fill("white");
-  rect(1140, 300, 30, 80);
-  //rect(640, 300, 30, 80);
-  
-  //shape3 answer
-  fill("white");
-  rect(740, 150, 30, 50);
-  //rect(640, 150, 30, 50);
-  
-  //shape4 answer
-  fill("white");
-  rect(840, 200, 50, 50);
-  //rect(540, 200, 50, 50);
-  
-  //shape5 answer //possibly shape 6
-  fill("white");
-  ellipse(740, 270, 40);
-  //ellipse(440,270, 40);
+  //displays templates that draggable shapes will be placed on
+  testShape1.show();
+  testShape2.show();
+  testShape3.show();
+  testShape4.show();
+  testShape5.show();
+  testShape6.show();
 
-  //shape6 answer //possibly shape 5
-  fill("white");
-  ellipse(1140, 170, 70);
-  //ellipse(440,170,70);
-  ///////////GUI LAYOUT/////////////
-
+  //calls functions for draggable shapes
   shape1.over();
   shape1.update();
   shape1.show();
-
+ 
   shape2.over();
   shape2.update();
   shape2.show();
@@ -118,19 +136,14 @@ function draw() {
   shape6.update();
   shape6.show();
 
- let r = dist(shape1.x,testShape2.y, testShape1.x,testShape1.y);//testing
-
-   //if the shape is dropped into the correct location 
+  //checks to see if the correct shapes are being matched and colors them green if true
   if(shape1.intersects(testShape1) && shape1.releasedCheck(false)){
     shape1.correctPosition(); //color the shape green
   }
-  else if ( r > shape1.w/5 + testShape1.w/5 && shape1.releasedCheck(true)) { //testing attempt tracker
-  attempts = attempts --;
-   }
 
   if(shape2.intersects(testShape2) && shape2.releasedCheck(false)){
     shape2.correctPosition();
-  }
+  } 
 
   if(shape3.intersects(testShape3) && shape3.releasedCheck(false)){
     shape3.correctPosition();
@@ -148,36 +161,85 @@ function draw() {
     shape6.correctPosition();
   } 
 
+
 ///////////Timer -- Attempts counters///////////////// 
-   fill("yellow");
-   text('Time:',470,60);
- text(timer, 600, 60);
+    //more font to match game layout
+   textFont(font, windowWidth * 0.04);
+   fill(255);
+   strokeWeight(0);          
+   text('Time:',windowWidth/2 - 200, 60);
+   
+ text(timer, windowWidth/2 - 70, 60);
    textSize(50);
-   if (frameCount % 60 == 0 && timer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
+
+   // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
+   if (frameCount % 60 == 0 && timer > 0 && displayTimer == false) { 
      timer --;
    }
+   //if the timer is 0 then display GAME OVER at the center of the screen
    if (timer == 0) {
-    textSize(100);
+     textFont(font,windowWidth*0.125);
      fill("red");
-     text("GAME OVER", 325, 330);
+     text("GAME OVER", windowWidth/2 - 420, windowHeight/2);
      textSize(50);
    }
+   textFont(font, windowWidth * 0.04);
+   fill(255);
+   strokeWeight(0);
+   //actively displays the total amount of user attempts during the game                         
+   text("Attempts: " + attempts, windowWidth/2 + 40, 60);
 
-   fill("green");
-   text('Attempts:',670,60);
- text(attempts, 890, 60);
-   textSize(50);
-  // if (frameCount % 60 == 0 && timer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
-   //  timer --;
-  // }
-  // if (timer == 0) {
-   // textSize(100);
-   //  fill("red");
-    // text("GAME OVER", 325, 330);
-    // textSize(50);
-  // }
- 
+  
+ //if everything is placed in the correct position
+ if(shape1.intersects(testShape1) && shape1.releasedCheck(false) && shape2.intersects(testShape2) && 
+ shape2.releasedCheck(false) && shape3.intersects(testShape3) && shape3.releasedCheck(false) &&
+ shape4.intersects(testShape4) && shape4.releasedCheck(false) && shape5.intersects(testShape5) && shape5.releasedCheck(false)
+ && shape6.intersects(testShape6) && shape6.releasedCheck(false)){
+
+  displayTimer = true; //displays finished time
+   if(timer != 0){ //avoids printing Great Job! and GAME OVER at the same time
+   textFont(font, windowWidth * 0.08);
+   fill(255);
+   strokeWeight(0);
+   text("Great Job!", 75, 330);
+   text("Your Time: " + timer, 75, 530);
+   text("Total Attempts: " + attempts, 75, 730);
+   }
 }
+}
+}//end draw 
+
+function getNonRepeatRandomShapeXPos(){
+//randomly assigns x positions of the shapes between the 6 choices in the xPositions array
+let xPositions =[windowWidth/4,windowWidth/5, windowWidth/6,windowWidth/7, windowWidth/8, windowWidth/9 ]; 
+while(true){
+let selectXpos = random(xPositions);
+if(selectXpos == lastRandomX){ //if the last shape is in the position of the previous shape choose again
+  //console.log ("duplicate");
+  continue;
+}
+else{ //else assigns the x position and continue to the next draggable shape
+  lastRandomX = selectXpos;
+  return selectXpos;
+}
+}
+}// end getNonRepeatRandomShapeXPos
+
+function getNonRepeatRandomShapeYPos(){
+//randomly assigns y positions of the shapes between the 6 choices in the xPositions array
+let yPositions = [windowHeight/4,windowHeight/5, windowHeight/6, windowHeight/7, windowHeight/8, windowHeight/9];
+while(true){
+let selectYpos = random(yPositions);
+if(selectYpos == lastRandomY){ //if the last shape is in the position of the previous shape choose again
+  //console.log ("duplicate");
+  continue;
+}
+else{ //else assigns the y position and continue to the next draggable shape
+  lastRandomY = selectYpos; 
+  return selectYpos;
+}
+}
+} // end getNonRepeatRandomShapeYPos
 
 function mousePressed() {
   shape1.pressed();
@@ -186,7 +248,7 @@ function mousePressed() {
   shape4.pressed();
   shape5.pressed();
   shape6.pressed();
-}
+} // end mousePressed
 
 function mouseReleased() {
   shape1.released();
@@ -195,48 +257,49 @@ function mouseReleased() {
   shape4.released();
   shape5.released();
   shape6.released();
-}
+} // end mouseReleased
 
-class AnswerRectangle{ //creates invisible shape under template locations for checking
+class AnswerRectangle{ //creates template shapes that the user is placing draggable shapes on
   constructor(x, y, w, h) {
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
     this.offsetX = 0;
-    this.offsetY = 0;
+    this.offsetY = 0; 
   }
 
-  show() { //needs to be invisible
-   // stroke(0);
-    //fill("yellow");
-    //rect(this.x, this.y, this.w, this.h);
-    noFill();
-    noStroke();
+  //show function displays shape
+  show() { 
+    stroke('rgb(0,255,0)');
+    strokeWeight(4);
+    fill("white");
+    rect(this.x, this.y, this.w, this.h);
     }
-}
 
-class AnswerCircle{//creates invisible shape under template locations for checking
+} //end AnswerRectangle
+
+class AnswerCircle{//creates template shapes that the user is placing draggable shapes on
 constructor(x, y, r) {
   this.x = x;
   this.y = y;
   this.r = r;
   this.offsetX = 0;
   this.offsetY = 0;
-
 }
 
-show() { //needs to be invisible
-  //stroke(0);
-  //fill("yellow");
-  noFill();
-  noStroke();
+//show function displays shape
+show() { 
+  stroke('rgb(0,255,0)');
+  strokeWeight(4);
+  fill("white");
+  ellipse(this.x, this.y, this.r * 2);
   }
 
-}//end AnswerCircle class
+}//end AnswerCircle 
 
 
-class Draggable {
+class Draggable { //creates draggable rectangles
   constructor(x, y, w, h) {
     this.dragging = false; // Is the object being dragged?
     this.rollover = false; // Is the mouse over the square/rectangle?
@@ -247,18 +310,21 @@ class Draggable {
     this.offsetX = 0;
     this.offsetY = 0;
     this.locationCheck = false; // Is the shape placed in correct location?
-  }
+    this.subAttempt = false; //assign to false so attempt counter doesn't subtract immediately 
+  } // end Draggable
+
 
   intersects(other){ 
-    let r = dist(this.x,this.y, other.x, other.y);
-    return (r < this.w/5 + other.w/5);
-}
+    let r = dist(this.x,this.y, other.x, other.y); //stores distance between shapes to check if they intersect or not
+    return (r < this.w/30 + other.w/30);
+} // end intersects
 
  correctPosition(){ //function call to display green
      stroke(0);
      fill("green");
      rect(this.x, this.y, this.w, this.h);
-  }
+     this.subAttempt = false; 
+  } // end correctPosition
 
   over(x,y) {
     // Is mouse over object
@@ -267,7 +333,7 @@ class Draggable {
     } else {
       this.rollover = false;
     }
-  }
+  } // end over
 
   update() {
     // Adjust location if being dragged
@@ -275,20 +341,33 @@ class Draggable {
       this.x = mouseX + this.offsetX;
       this.y = mouseY + this.offsetY;
     }
-  }
+  } //end update
 
   show() {
-    stroke(0);
+    stroke('#222222');
+    strokeWeight(4);    
     // Different fill based on state
     if (this.dragging) {
-      fill(50);
+      stroke('#222222');
+      strokeWeight(4);  
+      fill("orange");  //shape is orange when being dragged
     } else if (this.rollover) {
-      fill(100);
-    } else {
-      fill(175, 200);
+      stroke('#222222');
+      strokeWeight(4);
+      fill("yellow"); //shape is yellow when the mouse hovers over
+    } else {  //else the shape is red, indicating that it still needs to be placed in the correct position
+      stroke('#222222');
+      strokeWeight(4);
+      fill("red");
     }
-    rect(this.x, this.y, this.w, this.h);
-  }
+    rect(this.x, this.y, this.w, this.h); //shows this rectangle (whichever one is being called by the show function)
+  } //end show
+
+  showCheck(attempt){
+    let s = this.subAttempt; //if false then subtract from attempt counter
+    return(s);
+  } //end showCheck
+
 
   pressed() {
     // Did I click on the rectangle?
@@ -298,25 +377,53 @@ class Draggable {
       this.offsetX = this.x - mouseX;
       this.offsetY = this.y - mouseY;
       this.locationCheck = false;
+      this.subAttempt = true;
     }
 
   }
 
   //returns true if shape is in correct location / false otherwise
   releasedCheck(check){
-    let c = this.locationCheck;
+    let c = this.locationCheck; //if false then subtract from attempts counter
     return(c);
   }
 
   released(){
-    this.dragging = false;
+    this.dragging = false; //shape is no longer being dragged
     this.locationCheck = true; //shape is in proper location
+    let r1 = dist(shape1.x, shape1.y, testShape1.x, testShape1.y);
+    let r2 = dist(shape2.x, shape2.y, testShape2.x, testShape2.y);
+    let r3 = dist(shape3.x, shape3.y, testShape3.x, testShape3.y);
+    let r4 = dist(shape4.x, shape4.y, testShape4.x, testShape4.y);
+   
+    //checks to see if the shapes are within or outside of intersecting distance
+    if( r1 > (shape1.w/5 + testShape1.w/5) && this.subAttempt == true )
+    {
+      if(attempts >= 0 ){ //if the shapes are not intersecting then add to the attempts location (shape wasn't placed correctly)
+      attempts = attempts + 1;
+    }} 
+      else if(r2 > (shape2.w/5 + testShape2.w/5) && this.subAttempt == true)
+      {
+        if(attempts >= 0 ){
+        attempts = attempts + 1;
+        }}
+        else if(r3 > (shape3.w/5 + testShape3.w/5) && this.subAttempt == true)
+        {
+          if(attempts >= 0){
+          attempts = attempts + 1;
+          } }
+          else if(r4 > (shape4.w/5 + testShape4.w/5) && this.subAttempt == true)
+          {
+            if(attempts >= 0){
+            attempts = attempts + 1;
+            } 
+          }
+    this.subAttempt = false;
   }
  
-
 }//end Draggable Class
 
-class DraggableS {
+class DraggableS { //this is very similar to Draggable constructure except this is for circles not rectangles
   constructor(x, y, r) {
     this.dragging = false; // Is the object being dragged?
     this.rollover = false; // Is the mouse over the circle?
@@ -326,11 +433,11 @@ class DraggableS {
     this.offsetX = 0;
     this.offsetY = 0;
     this.locationCheck = false; // Is the shape placed in correct location?
+    this.subAttempt = false; //assign to false so attempt counter doesn't subtract immediately 
   }
 
-  intersects(other){
-                //shape5        testShape5
-    let d = dist(this.x,this.y, other.x,other.y);
+  intersects(other){             
+    let d = dist(this.x,this.y, other.x,other.y); //stores distance between shapes to check if they intersect or not
     return (d < this.r + other.r);
     
   }
@@ -339,12 +446,13 @@ class DraggableS {
      stroke(0);
      fill("green");
      ellipse(this.x, this.y, this.r * 2);
+     this.subAttempt = false;  
   }
   
   over() {
     // Is mouse over object
     let d = dist(mouseX, mouseY, this.x, this.y);
-    
+
     if (d < this.r) {
       this.rollover = true;
     } else {
@@ -360,18 +468,30 @@ class DraggableS {
     }
   }
 
-  show() {
-    stroke(0);
+  show() { //refer to draggable show function (they are the exact same)
+    stroke('#222222');
+    strokeWeight(4);
     // Different fill based on state
     if (this.dragging) {
-      fill(50);
+      stroke('#222222');
+      strokeWeight(4);
+      fill("orange");
     } else if (this.rollover) {
-      fill(100);
+      stroke('#222222');
+      strokeWeight(4);
+      fill("yellow");
     }
     else {
-      fill(175, 200);
+      stroke('#222222');
+      strokeWeight(4);
+      fill("red");//fill(175, 200);
     }
     ellipse(this.x, this.y, this.r * 2);
+  }
+
+  showCheck(attempt){
+    let s = this.subAttempt; //if false then the shape was not placed in correct location and return boolean value
+    return(s);
   }
 
   pressed() {
@@ -383,14 +503,12 @@ class DraggableS {
       this.offsetX = this.x - mouseX;
       this.offsetY = this.y - mouseY;
       this.locationCheck = false;
+      this.subAttempt = true;
     }
-    //if(attempts > 0){
-    //attempts = attempts - 1;
-    //}
   }
 
   releasedCheck(check){
-    let c = this.locationCheck;
+    let c = this.locationCheck; //checks to see where the shape is by returning the locationcheck as either true or false
     return(c);
   }
 
@@ -398,6 +516,22 @@ class DraggableS {
     // Quit dragging
     this.dragging = false;
     this.locationCheck = true;
+    //stores distance between mouse and circle shapes
+    let d = dist(mouseX, mouseY, shape5.x, testShape5.y);
+    let d1 = dist(mouseX, mouseY, shape6.x, testShape6.y);
+   
+    //if the shapes are moved then add to the attempts counter
+    if(d > (shape5.r + testShape5.r) && this.subAttempt == true){
+      if(attempts >= 0){
+        attempts = attempts + 1;
+     }
+    }
+    else if (d1 > (shape6.r + testShape6.r) && this.subAttempt == true){
+      if(attempts >= 0){
+        attempts = attempts + 1;
+     }
+    }
+    this.subAttempt = false;
   }
-  
-}// end DraggableS Class
+ 
+}// end DraggableS 

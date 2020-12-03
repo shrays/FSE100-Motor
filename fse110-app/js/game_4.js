@@ -1,21 +1,16 @@
 
-let font;
+let instructions;
 
-function preload() 
+function setup() 
 {
-    font = loadFont('Images/AmericanCaptain.ttf');
+    createCanvas(windowWidth, windowHeight);
+    imageMode(CENTER);
+    instructions = loadImage("Images/AboutInstructions.png");
 }
 
-function setup() {
-createCanvas(710, 400);
-
-// Set text characteristics
-
-}
-
-function draw() {
-textFont(font, windowWidth * 0.02);
-fill(255);
-text('Points: ', 400, 220);
-
+function draw() 
+{
+    clear();
+    instructions.resize(16 * windowWidth * 0.06, 9 * windowWidth * 0.06)
+    image(instructions, windowWidth / 2, windowHeight / 2);
 }
